@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#8b5a2b">
+<title>OvinoControl - Abate</title>
+<style>
+:root{--g:#8b5a2b;--gl:#f5eadf;--bg:#f6f7f5;--card:#fff;--t:#29251f;--m:#77736c;--l:#e1e1dc;--red:#b9382f}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--t)}
+header{background:var(--g);color:#fff;padding:18px 16px;font-size:24px;font-weight:800;position:sticky;top:0}
+main{max-width:950px;margin:auto;padding:14px 14px 40px}.card{background:var(--card);border:1px solid var(--l);border-radius:16px;padding:14px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat b{display:block;font-size:22px;color:var(--g)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+button{border:0;border-radius:10px;padding:10px 13px;background:var(--g);color:#fff;font-weight:700}.secondary{background:var(--gl);color:var(--g)}.danger{background:#fdecea;color:var(--red)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #d5d8d2;border-radius:9px;background:var(--card);color:var(--t);font:inherit}
+.full{grid-column:1/-1}.notice{background:#fff8df;border:1px solid #eadb9c;border-radius:10px;padding:10px;font-size:13px;margin-bottom:10px}.item{padding:12px 0;border-bottom:1px solid var(--l)}.small{font-size:12px;color:var(--m)}
+@media(max-width:650px){.grid{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<header>🐑 OvinoControl • Abate</header>
+<main>
+<div class="notice">Cadastre cordeiros comprados de outras granjas por lote ou individualmente e acompanhe peso, custos, venda e lucro previsto.</div>
+<div class="grid">
+<div class="card stat"><b id="qLotes">0</b>Lotes</div>
+<div class="card stat"><b id="qAnimais">0</b>Animais</div>
+<div class="card stat"><b id="custo">R$ 0,00</b>Custo total</div>
+<div class="card stat"><b id="lucro">R$ 0,00</b>Lucro previsto</div>
+</div>
+<div class="actions"><button onclick="novoLote()">+ Novo lote</button><button onclick="novoAnimal()">+ Novo animal</button></div>
+
+<section id="form" class="card" style="display:none">
+<div class="row"><h2 id="titulo">Novo lote</h2><button class="secondary" onclick="fecharForm()">Fechar</button></div>
+<input type="hidden" id="tipo"><input type="hidden" id="id">
+<div id="loteCampos">
+<div class="formgrid">
+<div><label>Identificação do lote</label><input id="loteNome" placeholder="Lote 001"></div>
+<div><label>Granja de origem</label><input id="origem" placeholder="Nome da granja"></div>
+<div><label>Data da compra</label><input id="compraData" type="date"></div>
+<div><label>Quantidade</label><input id="qtd" type="number" min="1"></div>
+<div><label>Peso total comprado (kg)</label><input id="peso" type="number" min="0" step=".01"></div>
+<div><label>Valor pago total (R$)</label><input id="valorCompra" type="number" min="0" step=".01"></div>
+<div><label>Outros gastos (R$)</label><input id="gastos" type="number" min="0" step=".01" value="0"></div>
+<div><label>Peso de venda previsto (kg)</label><input id="pesoVenda" type="number" min="0" step=".01"></div>
+<div><label>Preço de venda previsto (R$/kg)</label><input id="precoVenda" type="number" min="0" step=".01"></div>
+<div class="full"><label>Observações</label><textarea id="obs"></textarea></div>
+</div>
+</div>
+
+<div id="animalCampos" style="display:none">
+<div class="formgrid">
+<div><label>Brinco / identificação</label><input id="aNum" placeholder="C001"></div>
+<div><label>Lote</label><select id="aLote"></select></div>
+<div><label>Data da compra</label><input id="aData" type="date"></div>
+<div><label>Granja de origem</label><input id="aOrigem"></div>
+<div><label>Peso comprado (kg)</label><input id="aPeso" type="number" step=".01"></div>
+<div><label>Valor pago (R$)</label><input id="aCompra" type="number" step=".01"></div>
+<div><label>Outros gastos (R$)</label><input id="aGastos" type="number" step=".01" value="0"></div>
+<div><label>Peso de venda previsto (kg)</label><input id="aPesoVenda" type="number" step=".01"></div>
+<div><label>Preço de venda previsto (R$/kg)</label><input id="aPrecoVenda" type="number" step=".01"></div>
+<div class="full"><label>Observações</label><textarea id="aObs"></textarea></div>
+</div>
+</div>
+<div class="actions"><button class="secondary" onclick="fecharForm()">Cancelar</button><button onclick="salvar()">Salvar</button></div>
+</section>
+
+<section class="card"><h2>📦 Lotes</h2><div id="lotes"></div></section>
+<section class="card"><h2>🐑 Animais comprados</h2><div id="animais"></div></section>
+</main>
+
+<script>
+const K1='ovino_abate_lotes_v1',K2='ovino_abate_animais_v1';
+let lotes=JSON.parse(localStorage.getItem(K1)||'[]'),animais=JSON.parse(localStorage.getItem(K2)||'[]');
+const br=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const kg=v=>Number(v||0).toFixed(2)+' kg';
+const val=id=>document.getElementById(id).value.trim();
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+function persist(){localStorage.setItem(K1,JSON.stringify(lotes));localStorage.setItem(K2,JSON.stringify(animais));render()}
+function fecharForm(){document.getElementById('form').style.display='none'}
+function preencheLotes(sel=''){document.getElementById('aLote').innerHTML='<option value="">Sem lote</option>'+lotes.map(l=>`<option value="${l.id}" ${l.id===sel?'selected':''}>${esc(l.nome)}</option>`).join('')}
+function novoLote(){
+ document.getElementById('form').style.display='block';document.getElementById('titulo').textContent='Novo lote';
+ document.getElementById('tipo').value='lote';document.getElementById('id').value='';
+ document.getElementById('loteCampos').style.display='block';document.getElementById('animalCampos').style.display='none';
+ ['loteNome','origem','compraData','qtd','peso','valorCompra','gastos','pesoVenda','precoVenda','obs'].forEach(x=>document.getElementById(x).value=x==='gastos'?'0':'');
+ window.scrollTo({top:0,behavior:'smooth'})
+}
+function novoAnimal(){
+ document.getElementById('form').style.display='block';document.getElementById('titulo').textContent='Novo animal comprado';
+ document.getElementById('tipo').value='animal';document.getElementById('id').value='';
+ document.getElementById('loteCampos').style.display='none';document.getElementById('animalCampos').style.display='block';
+ preencheLotes();['aNum','aData','aOrigem','aPeso','aCompra','aGastos','aPesoVenda','aPrecoVenda','aObs'].forEach(x=>document.getElementById(x).value=x==='aGastos'?'0':'');
+ window.scrollTo({top:0,behavior:'smooth'})
+}
+function salvar(){
+ const tipo=val('tipo'),id=val('id')||Date.now().toString();
+ if(tipo==='lote'){
+  const x={id,nome:val('loteNome')||'Lote '+String(lotes.length+1).padStart(3,'0'),origem:val('origem'),data:val('compraData'),qtd:+val('qtd'),peso:+val('peso'),compra:+val('valorCompra'),gastos:+val('gastos'),pesoVenda:+val('pesoVenda'),precoVenda:+val('precoVenda'),obs:val('obs')};
+  const i=lotes.findIndex(z=>z.id===id);i<0?lotes.push(x):lotes[i]=x;
+ }else{
+  const x={id,num:val('aNum'),lote:val('aLote'),data:val('aData'),origem:val('aOrigem'),peso:+val('aPeso'),compra:+val('aCompra'),gastos:+val('aGastos'),pesoVenda:+val('aPesoVenda'),precoVenda:+val('aPrecoVenda'),obs:val('aObs')};
+  const i=animais.findIndex(z=>z.id===id);i<0?animais.push(x):animais[i]=x;
+ }
+ persist();fecharForm()
+}
+function editarLote(id){
+ const x=lotes.find(z=>z.id===id);novoLote();document.getElementById('id').value=id;
+ ['loteNome','origem','compraData','qtd','peso','valorCompra','gastos','pesoVenda','precoVenda','obs'].forEach((k,i)=>document.getElementById(k).value=[x.nome,x.origem,x.data,x.qtd,x.peso,x.compra,x.gastos,x.pesoVenda,x.precoVenda,x.obs][i]??'')
+}
+function editarAnimal(id){
+ const x=animais.find(z=>z.id===id);novoAnimal();document.getElementById('id').value=id;preencheLotes(x.lote);
+ ['aNum','aLote','aData','aOrigem','aPeso','aCompra','aGastos','aPesoVenda','aPrecoVenda','aObs'].forEach((k,i)=>document.getElementById(k).value=[x.num,x.lote,x.data,x.origem,x.peso,x.compra,x.gastos,x.pesoVenda,x.precoVenda,x.obs][i]??'')
+}
+function delLote(id){if(confirm('Excluir este lote?')){lotes=lotes.filter(x=>x.id!==id);persist()}}
+function delAnimal(id){if(confirm('Excluir este animal?')){animais=animais.filter(x=>x.id!==id);persist()}}
+function render(){
+ document.getElementById('qLotes').textContent=lotes.length;document.getElementById('qAnimais').textContent=animais.length;
+ const custo=lotes.reduce((s,x)=>s+x.compra+x.gastos,0)+animais.reduce((s,x)=>s+x.compra+x.gastos,0);
+ const receita=lotes.reduce((s,x)=>s+x.pesoVenda*x.precoVenda,0)+animais.reduce((s,x)=>s+x.pesoVenda*x.precoVenda,0);
+ document.getElementById('custo').textContent=br(custo);document.getElementById('lucro').textContent=br(receita-custo);
+ document.getElementById('lotes').innerHTML=lotes.length?lotes.map(x=>{const lucro=x.pesoVenda*x.precoVenda-(x.compra+x.gastos);return `<div class="item"><div class="row"><b>📦 ${esc(x.nome)}</b><b>${br(lucro)}</b></div><div class="small">Origem: ${esc(x.origem||'-')} • ${x.qtd||0} animais • Compra: ${kg(x.peso)} • Custo: ${br(x.compra+x.gastos)} • Venda prevista: ${kg(x.pesoVenda)} × ${br(x.precoVenda)}/kg</div><div class="actions"><button class="secondary" onclick="editarLote('${x.id}')">Editar</button><button class="danger" onclick="delLote('${x.id}')">Excluir</button></div></div>`}).join(''):'<div class="small">Nenhum lote cadastrado.</div>';
+ document.getElementById('animais').innerHTML=animais.length?animais.map(x=>{const l=lotes.find(z=>z.id===x.lote),lucro=x.pesoVenda*x.precoVenda-(x.compra+x.gastos);return `<div class="item"><div class="row"><b>🐑 ${esc(x.num||'Sem identificação')}</b><b>${br(lucro)}</b></div><div class="small">Lote: ${esc(l?.nome||'Sem lote')} • Origem: ${esc(x.origem||'-')} • Compra: ${kg(x.peso)} • Custo: ${br(x.compra+x.gastos)} • Venda: ${kg(x.pesoVenda)} × ${br(x.precoVenda)}/kg</div><div class="actions"><button class="secondary" onclick="editarAnimal('${x.id}')">Editar</button><button class="danger" onclick="delAnimal('${x.id}')">Excluir</button></div></div>`}).join(''):'<div class="small">Nenhum animal comprado individualmente.</div>'
+}
+render();
+</script>
+</body>
+</html>
