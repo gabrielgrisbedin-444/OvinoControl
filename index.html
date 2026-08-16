@@ -6,546 +6,110 @@
 <meta name="theme-color" content="#8b5a2b">
 <title>OvinoControl</title>
 <style>
-:root{--g:#8b5a2b;--gl:#f5eadf;--bg:#f6f7f5;--card:#fff;--t:#29251f;--m:#77736c;--l:#e1e1dc;--red:#b9382f;--green:#23824a;--gold:#b07b18}
-*{box-sizing:border-box}html,body{margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--t)}
-header{background:var(--g);color:#fff;padding:18px 16px calc(18px + env(safe-area-inset-top));position:sticky;top:0;z-index:5}.brand{font-size:25px;font-weight:800}
-main{max-width:900px;margin:auto;padding:14px 14px 120px}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.card{background:var(--card);border:1px solid var(--l);border-radius:16px;padding:14px;margin-bottom:10px}.stat b{display:block;font-size:25px;color:var(--g)}.small{font-size:12px;color:var(--m)}.row{display:flex;justify-content:space-between;gap:8px;align-items:center}
-.item{padding:13px 0;border-bottom:1px solid var(--l)}.item:last-child{border:0}.empty{text-align:center;color:var(--m);padding:20px}
-button{border:0;border-radius:11px;padding:10px 13px;background:var(--g);color:#fff;font-weight:700}.secondary{background:var(--gl);color:var(--g)}.danger{background:#fdecea;color:var(--red)}.gold{background:#fff4d8;color:#8a5e00}
+:root{--g:#8b5a2b;--gl:#f5eadf;--bg:#f6f7f5;--card:#fff;--t:#29251f;--m:#77736c;--l:#e1e1dc;--red:#b9382f;--green:#23824a}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--t)}
+header{background:var(--g);color:#fff;padding:18px 16px;font-size:25px;font-weight:800;position:sticky;top:0;z-index:5}
+main{max-width:900px;margin:auto;padding:14px 14px 115px}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--card);border:1px solid var(--l);border-radius:16px;padding:14px;margin-bottom:10px}.stat b{display:block;font-size:24px;color:var(--g)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.small{font-size:12px;color:var(--m)}.item{padding:12px 0;border-bottom:1px solid var(--l)}.empty{text-align:center;color:var(--m);padding:20px}
+button{border:0;border-radius:10px;padding:10px 13px;background:var(--g);color:#fff;font-weight:700}.secondary{background:var(--gl);color:var(--g)}.danger{background:#fdecea;color:var(--red)}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{flex:1;min-width:105px}
-label{display:block;font-size:12px;font-weight:700;margin:10px 0 5px}input,select,textarea{width:100%;padding:10px;border:1px solid #d5d8d2;border-radius:9px;background:var(--card);color:var(--t);font:inherit}textarea{min-height:70px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}
-.hero{position:relative;overflow:hidden;background:var(--gl);border:1px solid var(--l);border-radius:18px;padding:18px;margin-bottom:12px}.hero .sheep{position:absolute;right:14px;top:-8px;font-size:92px}.tag{display:inline-block;padding:4px 8px;border-radius:8px;background:var(--gl);color:var(--g);font-size:11px}
-.notice{background:#fff8df;border:1px solid #eadb9c;border-radius:10px;padding:10px;font-size:12px;margin-bottom:10px}
-.photo{width:150px;height:150px;object-fit:cover;border-radius:18px;border:3px solid var(--l)}.ph{width:150px;height:150px;border-radius:18px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:70px}.animal{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}
-nav{position:fixed;left:0;right:0;bottom:0;height:88px;background:var(--card);border-top:1px solid var(--l);display:flex;overflow-x:auto;z-index:10;padding-bottom:env(safe-area-inset-bottom);-webkit-overflow-scrolling:touch}
-nav button{background:transparent;color:var(--m);border-radius:0;min-width:92px;height:88px;flex:0 0 auto;font-size:11px}nav button.active{color:var(--g)}
-.in{color:var(--green)}.out{color:var(--red)}.balance{font-size:28px;color:var(--g)}
+label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}input,select,textarea{width:100%;padding:10px;border:1px solid #d5d8d2;border-radius:9px;background:var(--card);color:var(--t);font:inherit}textarea{min-height:70px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}
+nav{position:fixed;bottom:0;left:0;right:0;height:88px;background:var(--card);border-top:1px solid var(--l);display:flex;overflow-x:auto;z-index:10}nav button{background:transparent;color:var(--m);border-radius:0;min-width:92px;height:88px;flex:0 0 auto;font-size:11px}nav button.active{color:var(--g)}
 body.dark{--g:#c58a55;--gl:#3a2b20;--bg:#11120f;--card:#1b1d19;--t:#f2eee8;--m:#aaa69e;--l:#30322d;--red:#ff8b82;--green:#62d28d}
-body.dark .hero{background:#302319}body.dark .secondary{background:#302319;color:#d8aa7c}body.dark .danger{background:#3b211f;color:#ff9c94}body.dark .notice{background:#352d1b;color:#eee1b4}
-@media(max-width:520px){.formgrid{grid-template-columns:1fr}.animal{grid-template-columns:1fr}.photo,.ph{width:100%;height:220px}}
-
-.famacha-table{width:100%;border-collapse:separate;border-spacing:0 7px;margin-top:10px}
-.famacha-table td{padding:11px 9px;background:var(--bg)}
-.famacha-table td:first-child{width:58px;text-align:center;font-weight:800;border-radius:9px 0 0 9px}
-.famacha-table td:last-child{border-radius:0 9px 9px 0}
-.fa-color{display:inline-block;width:34px;height:34px;border-radius:7px;border:1px solid rgba(0,0,0,.18);vertical-align:middle}
-.fa1{background:#8b0000}.fa2{background:#c62828}.fa3{background:#e5a100}.fa4{background:#f1c40f}.fa5{background:#f5f5f5;border:2px solid #888}
-
-.san-cal-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.san-cal{width:100%;min-width:860px;border-collapse:separate;border-spacing:0 5px}
-.san-cal th{font-size:12px;padding:8px 5px;color:var(--m);text-align:center}
-.san-cal th:first-child{width:250px;text-align:left}
-.san-cal td{background:var(--bg);padding:7px 4px;text-align:center}
-.san-cal td:first-child{text-align:left;border-radius:9px 0 0 9px;font-weight:700}
-.san-cal td:last-child{border-radius:0 9px 9px 0}
-.san-month{width:43px;height:36px;border:1px solid var(--l);border-radius:8px;background:var(--card);cursor:pointer;font-weight:800}
-.san-month.on{background:var(--g);color:#fff;border-color:var(--g)}
-.san-del{padding:6px 9px!important}
-.san-help{background:#fff8df;border:1px solid #eadb9c;padding:12px;border-radius:12px;margin-bottom:12px}
+@media(max-width:520px){.formgrid{grid-template-columns:1fr}}
+.notice{background:#fff8df;border:1px solid #eadb9c;border-radius:10px;padding:10px;font-size:12px;margin-bottom:10px}
 </style>
 </head>
 <body>
-<header><div class="brand">🐑 OvinoControl</div></header>
-<main id="main">
+<header>🐑 OvinoControl</header>
+<main>
 
 <section id="home" class="page active">
-<div class="hero"><div style="font-size:22px;font-weight:800">Olá! 👋</div><p style="margin:7px 0;color:var(--m)">Controle completo da sua criação de ovinos.</p><div class="small">🐑 Animais • ❤️ Reprodução • 💉 Saúde • ⚖️ Peso • 💰 Vendas</div><div class="sheep">🐑</div></div>
-<div id="homeAlerts"></div>
+<div class="card"><h2>Controle do rebanho</h2><div class="small">Criação, reprodução, saúde, FAMACHA, calendário sanitário e compra para abate.</div></div>
 <div class="grid">
-<div class="card stat"><b id="sF">0</b><span>Ovelhas</span></div><div class="card stat"><b id="sM">0</b><span>Carneiros</span></div>
-<div class="card stat"><b id="sP">0</b><span>Prenhes</span></div><div class="card stat"><b id="sN">0</b><span>Cordeiros nascidos</span></div>
-<div class="card stat"><b id="sD">0</b><span>Desmamados</span></div><div class="card stat"><b id="sMort">0</b><span>Mortos</span></div>
-<div class="card stat"><b id="sVenda">R$ 0,00</b><span>Vendas de animais</span></div><div class="card stat"><b id="sSaldo">R$ 0,00</b><span>Saldo financeiro</span></div>
-<div class="card stat"><b id="sRacao">0 kg</b><span>Ração disponível</span></div><div class="card stat"><b id="sCarne">0 kg</b><span>Carne disponível</span></div>
+<div class="card stat"><b id="qAnim">0</b>Animais</div>
+<div class="card stat"><b id="qAbate">0</b>Lotes para abate</div>
+<div class="card stat"><b id="invest">R$ 0,00</b>Investimento em abate</div>
+<div class="card stat"><b id="lucro">R$ 0,00</b>Lucro previsto</div>
 </div>
-<h3>Próximos eventos</h3><div id="events" class="card"></div>
+<div id="homeAbate" class="card"></div>
 </section>
 
-<section id="alertas" class="page"><div class="row"><h2>🔔 Alertas</h2><button onclick="show('config')">⚙️ Configurar</button></div><div id="alertList" class="card"></div></section>
+<section id="animais" class="page"><div class="row"><h2>🐑 Animais</h2><button onclick="novoAnimal()">+ Novo</button></div><div id="animalList"></div></section>
+<section id="animalForm" class="page"><h2>Novo animal</h2><div class="card">
+<div class="formgrid">
+<div><label>Brinco</label><input id="brinco"></div><div><label>Nome</label><input id="nome"></div>
+<div><label>Sexo</label><select id="sexo"><option>Fêmea</option><option>Macho</option></select></div><div><label>Raça</label><input id="raca"></div>
+<div><label>Nascimento</label><input id="nasc" type="date"></div><div><label>Peso atual (kg)</label><input id="peso" type="number" step=".1"></div>
+<div><label>Peso ao nascer (kg)</label><input id="pesoN" type="number" step=".01"></div><div><label>Peso ao desmame (kg)</label><input id="pesoD" type="number" step=".01"></div>
+<div class="full"><label>Observações</label><textarea id="obs"></textarea></div>
+</div><div class="actions"><button class="secondary" onclick="show('animais')">Cancelar</button><button onclick="saveAnimal()">Salvar</button></div>
+</div></section>
 
-<section id="femeas" class="page"><div class="row"><h2>🐑 Ovelhas</h2><button onclick="novoAnimal('f')">+ Nova</button></div><div id="fList"></div></section>
-<section id="machos" class="page"><div class="row"><h2>🐏 Carneiros</h2><button onclick="novoAnimal('m')">+ Novo</button></div><div id="mList"></div></section>
+<section id="abate" class="page"><div class="row"><h2>🥩 Compra para Abate</h2><button onclick="novoLote()">+ Novo lote</button></div>
+<div class="grid"><div class="card stat"><b id="abInvest">R$ 0,00</b>Investimento</div><div class="card stat"><b id="abGastos">R$ 0,00</b>Gastos</div><div class="card stat"><b id="abReceita">R$ 0,00</b>Receita prevista</div><div class="card stat"><b id="abLucro">R$ 0,00</b>Lucro previsto</div></div>
+<div class="notice">Registre o lote comprado de outra granja e todos os custos até o abate. O aplicativo calcula automaticamente o custo, receita e lucro previsto.</div>
+<div id="loteList"></div></section>
 
-<section id="animal" class="page"><h2 id="aTitle">Novo animal</h2><div class="card"><div class="formgrid">
-<div><label>Brinco / Número</label><input id="anum" placeholder="OV001"></div>
-<div><label>Nome</label><input id="aname" placeholder="Ex.: Estrela"></div>
-<div><label>Raça</label><input id="arace" placeholder="Dorper"></div>
-<div><label>Nascimento</label><input id="abirth" type="date"></div>
-<div><label>Sexo</label><select id="asex"><option value="f">Fêmea</option><option value="m">Macho</option></select></div>
-<div><label>Peso atual (kg)</label><input id="apeso" type="number" step=".1"></div>
-<div class="full"><h3 style="margin:8px 0 0">⚖️ Pesos do ciclo</h3><div class="small">Registre os principais pesos do cordeiro/animal para acompanhar a evolução.</div></div>
-<div><label>Peso ao nascer (kg)</label><input id="apesoNasc" type="number" step=".01" min="0" placeholder="Ex.: 4,20"></div>
-<div><label>Data do nascimento</label><input id="adataNascPeso" type="date"></div>
-<div><label>Peso ao desmame (kg)</label><input id="apesoDesm" type="number" step=".01" min="0" placeholder="Ex.: 18,50"></div>
-<div><label>Data do desmame</label><input id="adataDesmPeso" type="date"></div>
-<div><label>Peso na venda/abate (kg)</label><input id="apesoVenda" type="number" step=".01" min="0" placeholder="Ex.: 38,00"></div>
-<div><label>Data da venda/abate</label><input id="adataVendaPeso" type="date"></div>
-<div><label>Valor da venda (R$)</label><input id="avalorVendaPeso" type="number" step=".01" min="0" placeholder="Ex.: 650,00"></div>
-<div><label>Destino</label><select id="adestinoPeso"><option>Venda</option><option>Abate</option><option>Reprodução</option><option>Outro</option></select></div>
-<div class="full"><div id="pesoResumo" class="notice">📈 Informe os pesos para visualizar a evolução.</div></div>
-<div><label>Foto</label><input id="aphoto" type="file" accept="image/*"></div>
-<div><label>Status</label><select id="astatus"><option>Ativo</option><option>Retirar do lote</option><option>Vendido</option><option>Mort0</option></select><label>Motivo da retirada do lote</label><select id="amotivo"><option value="">Selecione</option><option>Excesso de vermifugação</option><option>Doença</option><option>Idade</option><option>Baixa produtividade</option><option>Problema reprodutivo</option><option>Condição corporal</option><option>Agressividade</option><option>Outro</option></select><label>Detalhes da retirada</label><textarea id="amotivoObs" placeholder="Explique o motivo, se necessário"></textarea></div>
-<div class="full"><label>Observações</label><textarea id="aobs"></textarea></div>
-</div><div id="photoPreview"></div><div class="actions"><button class="secondary" onclick="show(sex==='f'?'femeas':'machos')">Cancelar</button><button onclick="saveAnimal()">Salvar</button></div></div></section>
+<section id="loteForm" class="page"><h2>Novo lote para abate</h2><div class="card"><div class="formgrid">
+<div><label>Data da compra</label><input id="ld" type="date"></div><div><label>Granja / origem</label><input id="lorigem"></div>
+<div><label>Quantidade de cordeiros</label><input id="lq" type="number"></div><div><label>Peso total comprado (kg)</label><input id="lpeso" type="number" step=".1"></div>
+<div><label>Valor da compra (R$)</label><input id="lcompra" type="number" step=".01"></div><div><label>Frete (R$)</label><input id="lfrete" type="number" step=".01"></div>
+<div><label>Ração (R$)</label><input id="lracao" type="number" step=".01"></div><div><label>Medicamentos/vacinas (R$)</label><input id="lmed" type="number" step=".01"></div>
+<div><label>Outros gastos (R$)</label><input id="loutros" type="number" step=".01"></div><div><label>Peso vivo previsto no abate (kg)</label><input id="lpesoAbate" type="number" step=".1"></div>
+<div><label>Rendimento de carcaça (%)</label><input id="lrend" type="number" step=".1" value="45"></div><div><label>Preço esperado da carne (R$/kg)</label><input id="lpreco" type="number" step=".01"></div>
+<div><label>Gasto com abate (R$)</label><input id="labate" type="number" step=".01"></div><div><label>Embalagem (R$)</label><input id="lemb" type="number" step=".01"></div>
+<div><label>Transporte da venda (R$)</label><input id="ltrans" type="number" step=".01"></div>
+<div class="full"><label>Observações</label><textarea id="lobs"></textarea></div>
+<div class="full"><div id="lres" class="notice">Informe os valores para calcular.</div></div>
+</div><div class="actions"><button class="secondary" onclick="show('abate')">Cancelar</button><button onclick="saveLote()">Salvar lote</button></div></div></section>
 
-<section id="repro" class="page"><div class="row"><h2>❤️ Reprodução</h2><button onclick="novoRepro()">+ Cobertura</button></div><div class="grid"><div class="card stat"><b id="rp">0</b><span>Prenhe(s)</span></div><div class="card stat"><b id="rb">0</b><span>Partos</span></div></div><div id="reproList" class="card"></div><div class="actions"><button onclick="novoParto()">+ Parto</button><button onclick="show('desmame')">+ Desmame</button></div></section>
-<section id="reproForm" class="page"><h2 id="reproTitle">Nova cobertura</h2><div class="card"><label>Ovelha</label><select id="rmat"></select><label>Carneiro</label><select id="rmac"></select><label>Data da cobertura</label><input id="rdata" type="date"><label>Previsão do parto</label><input id="rprev" type="date"><label>Observação</label><textarea id="robs"></textarea><div class="actions"><button class="secondary" onclick="show('repro')">Cancelar</button><button onclick="saveRepro()">Salvar</button></div></div></section>
-
-<section id="parto" class="page"><h2 id="partoTitle">Novo parto</h2><div class="card"><label>Ovelha</label><select id="bmat"></select><label>Data</label><input id="bdata" type="date"><div class="formgrid"><div><label>Nascidos</label><input id="bn" type="number"></div><div><label>Vivos</label><input id="bv" type="number"></div><div><label>Mortos no parto</label><input id="bm" type="number"></div><div><label>Sexo dos cordeiros</label><input id="bsexo" placeholder="Ex.: 1M + 1F"></div>
-<div class="full"><label>Brincos dos cordeiros nascidos</label><textarea id="bbrincos" placeholder="Digite um número por linha ou separados por vírgula. Ex.: 101, 102, 103"></textarea><div class="small">Ao salvar o parto, cada brinco informado pode ser cadastrado automaticamente como um novo cordeiro na ficha de animais.</div></div></div><label>Observação</label><textarea id="bobs"></textarea><div class="actions"><button class="secondary" onclick="show('repro')">Cancelar</button><button onclick="saveBirth()">Salvar parto</button></div></div></section>
-
-<section id="desmame" class="page"><h2>Novo desmame</h2><div class="card"><label>Ovelha</label><select id="dmat"></select><div class="formgrid"><div><label>Data</label><input id="ddate" type="date"></div><div><label>Quantidade</label><input id="dq" type="number"></div><div><label>Peso médio (kg)</label><input id="dp" type="number" step=".1"></div><div><label>Destino</label><select id="ddest"><option>Engorda</option><option>Reprodução</option><option>Venda</option></select></div></div><div class="actions"><button onclick="saveWean()">Salvar</button></div></div></section>
-
-<section id="saude" class="page"><div class="row"><h2>💉 Saúde</h2><button onclick="novoSaude()">+ Registro</button></div><div id="healthList" class="card"></div></section>
-<section id="saudeForm" class="page"><h2>Novo registro de saúde</h2><div class="card"><label>Animal</label><select id="hAnimal"></select><label>Tipo</label><select id="hTipo"><option>Vacina</option><option>Vermifugação</option><option>Medicamento</option><option>Consulta</option><option>Outro</option></select><div class="formgrid"><div><label>Data</label><input id="hData" type="date"></div><div><label>Próxima data</label><input id="hProx" type="date"></div></div><label>Produto / procedimento</label><input id="hProd"><label>Dose / informação</label><input id="hDose"><label>Observação</label><textarea id="hObs"></textarea><div class="actions"><button class="secondary" onclick="show('saude')">Cancelar</button><button onclick="saveSaude()">Salvar</button></div></div></section>
-
-<section id="historico" class="page"><div class="row"><h2>📋 Histórico</h2><button onclick="pdfHistorico()">📄 PDF</button></div><div class="card"><label>Escolha o animal</label><select id="histAnimal" onchange="renderHist()"></select></div><div id="histBox"></div></section>
-
-<section id="vendas" class="page"><div class="row"><h2>💰 Vendas</h2><button onclick="novoVenda()">+ Venda</button></div><div class="grid"><div class="card stat"><b id="vAnim">R$ 0,00</b><span>Animais vivos</span></div><div class="card stat"><b id="vCarne">R$ 0,00</b><span>Carne</span></div></div><div id="salesList" class="card"></div></section>
-<section id="vendaForm" class="page"><h2>Nova venda</h2><div class="card"><div class="formgrid"><div><label>Tipo</label><select id="vTipo"><option>Animal vivo</option><option>Carne</option><option>Outro</option></select></div><div><label>Data</label><input id="vData" type="date"></div><div><label>Animal (se houver)</label><select id="vAnimal"></select></div><div><label>Quantidade</label><input id="vQtd" type="number" step=".1"></div><div><label>Valor (R$)</label><input id="vValor" type="number" step=".01"></div><div><label>Cliente</label><input id="vCliente"></div><div class="full"><label>Observação</label><textarea id="vObs"></textarea></div></div><div class="actions"><button class="secondary" onclick="show('vendas')">Cancelar</button><button onclick="saveVenda()">Salvar venda</button></div></div></section>
-
-<section id="estoque" class="page"><div class="row"><h2>🌾 Estoque</h2><button onclick="novoEstoque()">+ Movimento</button></div><div class="grid"><div class="card stat"><b id="eRacao">0 kg</b><span>Ração</span></div><div class="card stat"><b id="eCarne">0 kg</b><span>Carne</span></div></div><div id="stockList" class="card"></div></section>
-<section id="estoqueForm" class="page"><h2>Novo movimento</h2><div class="card"><div class="formgrid"><div><label>Tipo</label><select id="eTipo"><option>Entrada</option><option>Saída</option></select></div><div><label>Produto</label><select id="eItem"><option value="racao">Ração</option><option value="carne">Carne</option></select></div><div><label>Data</label><input id="eData" type="date"></div><div><label>Quantidade (kg)</label><input id="eQtd" type="number" step=".1"></div><div class="full"><label>Descrição</label><input id="eDesc"></div></div><div class="actions"><button class="secondary" onclick="show('estoque')">Cancelar</button><button onclick="saveEstoque()">Salvar</button></div></div></section>
-
-<section id="financeiro" class="page"><div class="row"><h2>💵 Financeiro</h2><button onclick="novoFin()">+ Lançamento</button></div><div class="grid"><div class="card stat"><b id="fE" class="in">R$ 0,00</b><span>Entradas</span></div><div class="card stat"><b id="fS" class="out">R$ 0,00</b><span>Saídas</span></div><div class="card stat" style="grid-column:1/-1"><b id="fB" class="balance">R$ 0,00</b><span>Saldo</span></div></div><div id="finList" class="card"></div></section>
-<section id="finForm" class="page"><h2>Novo lançamento</h2><div class="card"><div class="formgrid"><div><label>Tipo</label><select id="fTipo"><option>Entrada</option><option>Saída</option></select></div><div><label>Categoria</label><input id="fCat" placeholder="Ração, venda, medicamento..."></div><div><label>Data</label><input id="fData" type="date"></div><div><label>Valor (R$)</label><input id="fValor" type="number" step=".01"></div><div class="full"><label>Descrição</label><input id="fDesc"></div></div><div class="actions"><button class="secondary" onclick="show('financeiro')">Cancelar</button><button onclick="saveFin()">Salvar</button></div></div></section>
-
-<section id="rel" class="page"><div class="row"><h2>📊 Relatórios</h2><button onclick="pdfRelatorio()">📄 PDF</button></div><div class="grid"><div class="card stat"><b id="rrN">0</b><span>Nascidos</span></div><div class="card stat"><b id="rrD">0</b><span>Desmamados</span></div><div class="card stat"><b id="rrP">0</b><span>Partos</span></div><div class="card stat"><b id="rrMort">0</b><span>Mortos</span></div><div class="card stat"><b id="rrVenda">R$ 0,00</b><span>Vendas</span></div><div class="card stat"><b id="rrSaldo">R$ 0,00</b><span>Saldo</span></div></div></section>
-
-
-
-
-<section id="sanitario" class="page">
-  <div class="row"><h2>📅 Calendário sanitário</h2><button onclick="novoSanitario()">+ Atividade</button></div>
-  <div class="san-help">
-    <b>Calendário anual da propriedade</b><br>
-    Marque em quais meses cada atividade deve ser feita. O calendário é editável e serve para organizar o manejo da sua criação.
-    <div class="small" style="margin-top:5px">⚠️ As épocas, produtos e doses devem seguir o planejamento da propriedade e a orientação do médico-veterinário.</div>
-  </div>
-  <div class="card">
-    <div class="san-cal-wrap">
-      <table class="san-cal">
-        <thead><tr><th>Atividade</th><th>JAN</th><th>FEV</th><th>MAR</th><th>ABR</th><th>MAI</th><th>JUN</th><th>JUL</th><th>AGO</th><th>SET</th><th>OUT</th><th>NOV</th><th>DEZ</th><th></th></tr></thead>
-        <tbody id="sanRows"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="card">
-    <h3>📌 Próximas atividades</h3>
-    <div id="sanUpcoming"></div>
-  </div>
-</section>
-
-<section id="sanForm" class="page">
-  <h2 id="sanTitle">Nova atividade sanitária</h2>
-  <div class="card">
-    <label>Atividade</label><input id="sanName" placeholder="Ex.: Vacina, vermifugação, tosquia...">
-    <label>Observação</label><input id="sanObs" placeholder="Ex.: conforme protocolo da propriedade">
-    <label>Meses programados</label>
-    <div id="sanMonthPick" class="grid"></div>
-    <div class="actions"><button class="secondary" onclick="show('sanitario')">Cancelar</button><button onclick="saveSanitario()">Salvar</button></div>
-  </div>
-</section>
-
-<section id="famacha" class="page">
-  <div class="row"><h2>👁️ FAMACHA</h2><button onclick="novoFamacha()">+ Avaliação</button></div>
-  <div class="notice">
-    <b>FAMACHA 1–5</b>: registre a avaliação da conjuntiva ocular e acompanhe a necessidade de intervenção.
-    Use a tabela como apoio ao manejo e siga a orientação do médico-veterinário da propriedade.
-  </div>
-  <div class="card">
-    <h3>Tabela de referência</h3>
-    <div class="item"><b>1 — vermelho intenso</b><div class="small">Condição favorável; geralmente sem indicação de tratamento apenas pelo escore.</div></div>
-    <div class="item"><b>2 — vermelho/rosado</b><div class="small">Condição favorável; acompanhar.</div></div>
-    <div class="item"><b>3 — rosado</b><div class="small">Atenção; avaliar o animal e outros sinais antes de decidir o manejo.</div></div>
-    <div class="item"><b>4 — rosa pálido</b><div class="small">Alerta de anemia; requer avaliação e manejo rápido.</div></div>
-    <div class="item"><b>5 — branco/pálido</b><div class="small">Alerta grave de anemia; procure avaliação veterinária imediatamente.</div></div>
-  </div>
-  <div class="grid">
-    <div class="card stat"><b id="fa4">0</b><span>Escore 4 ou 5</span></div>
-    <div class="card stat"><b id="faTotal">0</b><span>Avaliações</span></div>
-  </div>
-  <h3>Histórico de avaliações</h3>
-  <div id="famachaList" class="card"></div>
-</section>
-
-<section id="famachaForm" class="page">
-  <h2>Nova avaliação FAMACHA</h2>
-  <div class="card">
-    <label>Animal</label><select id="faAnimal"></select>
-    <div class="formgrid">
-      <div><label>Data</label><input id="faData" type="date"></div>
-      <div><label>Escore FAMACHA</label><select id="faScore"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
-    </div>
-    <label>Observações</label><textarea id="faObs" placeholder="Ex.: mucosa pálida, apetite, condição corporal..."></textarea>
-    <div class="actions"><button class="secondary" onclick="show('famacha')">Cancelar</button><button onclick="saveFamacha()">Salvar avaliação</button></div>
-  </div>
-</section>
-
-<section id="retirar" class="page">
-  <div class="row"><h2>🚨 Retirar do lote</h2><span id="retCount" class="tag">0 animais</span></div>
-  <div class="notice">Aqui aparecem os animais que atingiram o limite de vermifugações ou foram marcados manualmente para retirada.</div>
-  <div id="retList"></div>
-</section>
-
-<section id="config" class="page"><h2>⚙️ Configurações</h2><div class="card"><label>Nome da propriedade</label><input id="cfgNome" placeholder="Minha criação"><label>Modo de aparência</label><select id="cfgTema" onchange="setTema(this.value)"><option value="claro">Claro</option><option value="escuro">Escuro</option></select><label>Antecedência dos alertas (dias)</label><input id="cfgDias" type="number" min="0" max="30"><label>Limite de vermifugações para retirar do lote</label><input id="cfgVerm" type="number" min="1" max="99"><div class="small">Ex.: 3 = ao registrar a 3ª vermifugação do mesmo animal, ele será marcado para retirada do lote e aparecerá nos alertas.</div><div class="actions"><button onclick="saveConfig()">Salvar configurações</button><button class="secondary" onclick="backup()">💾 Backup</button><button class="secondary" onclick="document.getElementById('restoreFile').click()">↩️ Restaurar</button><input id="restoreFile" type="file" accept=".json" style="display:none" onchange="restore(this)"></div></div></section>
+<section id="repro" class="page"><h2>❤️ Reprodução</h2><div class="card">Use a área de animais para registrar ovelhas e acompanhe partos e desmames no seu controle.</div></section>
+<section id="saude" class="page"><h2>💉 Saúde</h2><div class="card"><label>Animal</label><select id="hAnimal"></select><label>Procedimento</label><select id="hTipo"><option>Vacina</option><option>Vermifugação</option><option>Medicamento</option></select><label>Data</label><input id="hData" type="date"><label>Observação</label><textarea id="hObs"></textarea><button onclick="saveSaude()">Salvar</button></div><div id="healthList" class="card"></div></section>
+<section id="famacha" class="page"><h2>👁️ FAMACHA</h2><div class="card"><b>Tabela de referência</b><div class="item">🔴 <b>1</b> — vermelho intenso</div><div class="item">🟥 <b>2</b> — vermelho/rosado</div><div class="item">🟠 <b>3</b> — rosado</div><div class="item">🟡 <b>4</b> — rosa pálido</div><div class="item">⚪ <b>5</b> — muito pálido</div><div class="small">Use a avaliação FAMACHA conforme orientação técnica/veterinária.</div></div></section>
+<section id="sanitario" class="page"><h2>📅 Calendário sanitário</h2><div id="sanList" class="card"></div></section>
+<section id="financeiro" class="page"><h2>💰 Financeiro</h2><div id="fin" class="grid"></div></section>
+<section id="config" class="page"><h2>⚙️ Configurações</h2><div class="card"><label>Aparência</label><select id="tema" onchange="setTema(this.value)"><option value="claro">Claro</option><option value="escuro">Escuro</option></select><button onclick="backup()">💾 Backup</button></div></section>
 
 </main>
-<nav id="nav">
+<nav>
 <button class="active" onclick="show('home',this)">🏠<br>Início</button>
-<button onclick="show('alertas',this)">🔔<br>Alertas</button>
-<button onclick="show('femeas',this)">🐑<br>Ovelhas</button>
-<button onclick="show('machos',this)">🐏<br>Carneiros</button>
+<button onclick="show('animais',this)">🐑<br>Animais</button>
+<button onclick="show('abate',this)">🥩<br>Abate</button>
 <button onclick="show('repro',this)">❤️<br>Reprodução</button>
 <button onclick="show('saude',this)">💉<br>Saúde</button>
-<button onclick="show('historico',this)">📋<br>Histórico</button>
-<button onclick="show('vendas',this)">💰<br>Vendas</button>
-<button onclick="show('estoque',this)">🌾<br>Estoque</button>
-<button onclick="show('financeiro',this)">💵<br>Financeiro</button>
-<button onclick="show('rel',this)">📊<br>Relatórios</button>
-<button onclick="show('sanitario',this)">📅<br>Sanitário</button><button onclick="show('famacha',this)">👁️<br>FAMACHA</button><button onclick="show('retirar',this)">🚨<br>Retirar</button><button onclick="show('config',this)">⚙️<br>Config.</button>
+<button onclick="show('famacha',this)">👁️<br>FAMACHA</button>
+<button onclick="show('sanitario',this)">📅<br>Sanitário</button>
+<button onclick="show('financeiro',this)">💰<br>Financeiro</button>
+<button onclick="show('config',this)">⚙️<br>Config.</button>
 </nav>
 
 <script>
-const KEY='ovinocontrol_v1';
-let db=JSON.parse(localStorage.getItem(KEY)||'{}');
-Object.assign(db,{famacha:db.famacha||[],sanitario:db.sanitario||[],animais:db.animais||[],repro:db.repro||[],partos:db.partos||[],desmames:db.desmames||[],saude:db.saude||[],vendas:db.vendas||[],estoque:db.estoque||[],financeiro:db.financeiro||[],config:db.config||{tema:'claro',dias:2,nome:'',limiteVermifugos:3}}); db.config.limiteVermifugos=db.config.limiteVermifugos||3;
-let aid=null,rid=null,photoData=''; let sex='f';
-const $=id=>document.getElementById(id), save=()=>localStorage.setItem(KEY,JSON.stringify(db));
-const today=()=>new Date().toISOString().slice(0,10);
-const money=v=>(Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const K='ovinocontrol_v2';let db=JSON.parse(localStorage.getItem(K)||'{}');db.animais??=[];db.lotes??=[];db.saude??=[];db.fin??=[];db.config??={tema:'claro'};
+const $=x=>document.getElementById(x), money=v=>(+v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}), today=()=>new Date().toISOString().slice(0,10), save=()=>localStorage.setItem(K,JSON.stringify(db));
 function show(id,b){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');render();scrollTo(0,0)}
-function animals(k){return db.animais.filter(a=>a.sexo===k&&a.status==='Ativo')}
-function nm(id){let a=db.animais.find(x=>String(x.id)===String(id));return a?a.num+' - '+a.name:'Animal não encontrado'}
-function opts(id,k){$(id).innerHTML=db.animais.filter(a=>!k||a.sexo===k).map(a=>`<option value="${a.id}">${esc(a.num)} - ${esc(a.name)}</option>`).join('')||'<option value="">Cadastre um animal primeiro</option>'}
-function pesoVal(id){return Number($(id).value)||0}
-function atualizarPesoResumo(){
-  let n=pesoVal('apesoNasc'), d=pesoVal('apesoDesm'), v=pesoVal('apesoVenda');
-  let parts=[];
-  if(n)parts.push(`Nascimento: <b>${n.toFixed(2)} kg</b>`);
-  if(d)parts.push(`Desmame: <b>${d.toFixed(2)} kg</b>${n?` • +${(d-n).toFixed(2)} kg`:''}`);
-  if(v)parts.push(`Venda/abate: <b>${v.toFixed(2)} kg</b>${d?` • +${(v-d).toFixed(2)} kg`:''}`);
-  $('pesoResumo').innerHTML=parts.length?'📈 '+parts.join('<br>'):'📈 Informe os pesos para visualizar a evolução.';
-}
-['apesoNasc','apesoDesm','apesoVenda'].forEach(id=>document.addEventListener('input',e=>{if(e.target.id===id)atualizarPesoResumo()}));
-
-function preencherPesos(a){
-  $('apesoNasc').value=a.pesoNascimento||'';
-  $('adataNascPeso').value=a.dataPesoNascimento||a.birth||'';
-  $('apesoDesm').value=a.pesoDesmame||'';
-  $('adataDesmPeso').value=a.dataPesoDesmame||'';
-  $('apesoVenda').value=a.pesoVendaAbate||'';
-  $('adataVendaPeso').value=a.dataPesoVendaAbate||'';
-  $('avalorVendaPeso').value=a.valorVendaPeso||'';
-  $('adestinoPeso').value=a.destinoPeso||'Venda';
-  atualizarPesoResumo();
-}
-function limparPesos(){
-  ['apesoNasc','adataNascPeso','apesoDesm','adataDesmPeso','apesoVenda','adataVendaPeso','avalorVendaPeso'].forEach(id=>$(id).value='');
-  $('adestinoPeso').value='Venda'; atualizarPesoResumo();
-}
-function novoAnimal(k){
-  aid=null;sex=k;$('aTitle').textContent=k==='f'?'Nova ovelha':'Novo carneiro';
-  $('anum').value='';$('aname').value='';$('arace').value='';$('abirth').value='';
-  $('asex').value=k;$('apeso').value='';$('aphoto').value='';$('astatus').value='Ativo';
-  $('amotivo').value='';$('amotivoObs').value='';$('aobs').value='';photoData='';
-  $('photoPreview').innerHTML='';limparPesos();show('animal')
-}
-function editAnimal(id){
-  let a=db.animais.find(x=>x.id===id);if(!a)return;
-  aid=id;sex=a.sexo;$('aTitle').textContent='Editar animal';$('anum').value=a.num;$('aname').value=a.name;
-  $('arace').value=a.race||'';$('abirth').value=a.birth||'';$('asex').value=a.sexo;$('apeso').value=a.peso||'';
-  $('astatus').value=a.status||'Ativo';$('amotivo').value=a.motivoRetirada||'';$('amotivoObs').value=a.motivoObs||'';
-  $('aobs').value=a.obs||'';photoData=a.photo||'';$('photoPreview').innerHTML=photoData?`<img class="photo" src="${photoData}">`:'';
-  preencherPesos(a);show('animal')
-}
-$('aphoto').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{photoData=r.result;$('photoPreview').innerHTML=`<img class="photo" src="${photoData}">`};r.readAsDataURL(f)});
-function saveAnimal(){
-  let x={
-    id:aid||Date.now(),num:$('anum').value.trim(),name:$('aname').value.trim(),race:$('arace').value.trim(),
-    birth:$('abirth').value,sexo:$('asex').value,peso:+$('apeso').value||0,status:$('astatus').value,
-    motivoRetirada:$('amotivo').value,motivoObs:$('amotivoObs').value,obs:$('aobs').value,photo:photoData,
-    pesoNascimento:pesoVal('apesoNasc'),dataPesoNascimento:$('adataNascPeso').value,
-    pesoDesmame:pesoVal('apesoDesm'),dataPesoDesmame:$('adataDesmPeso').value,
-    pesoVendaAbate:pesoVal('apesoVenda'),dataPesoVendaAbate:$('adataVendaPeso').value,
-    valorVendaPeso:+$('avalorVendaPeso').value||0,destinoPeso:$('adestinoPeso').value
-  };
-  if(!x.num||!x.name)return alert('Informe número e nome.');
-  if(aid){let i=db.animais.findIndex(a=>a.id===aid);db.animais[i]={...db.animais[i],...x}}
-  else db.animais.push(x);
-  save();show(x.sexo==='f'?'femeas':'machos')
-}
-function delAnimal(id){if(confirm('Excluir este animal?')){db.animais=db.animais.filter(a=>a.id!==id);save();render()}}
-function novoRepro(){rid=null;$('reproTitle').textContent='Nova cobertura';opts('rmat','f');opts('rmac','m');$('rdata').value=today();$('rprev').value='';$('robs').value='';show('reproForm')}
-function editRepro(id){let x=db.repro.find(a=>a.id===id);rid=id;opts('rmat','f');opts('rmac','m');$('rmat').value=x.ovelha;$('rmac').value=x.carneiro;$('rdata').value=x.data;$('rprev').value=x.prev||'';$('robs').value=x.obs||'';$('reproTitle').textContent='Editar cobertura';show('reproForm')}
-function saveRepro(){let x={id:rid||Date.now(),ovelha:$('rmat').value,carneiro:$('rmac').value,data:$('rdata').value||today(),prev:$('rprev').value,obs:$('robs').value};if(!x.ovelha||!x.carneiro)return alert('Cadastre ovelha e carneiro.');if(rid){let i=db.repro.findIndex(a=>a.id===rid);db.repro[i]=x}else db.repro.push(x);save();show('repro')}
-function delRepro(id){if(confirm('Excluir cobertura?')){db.repro=db.repro.filter(x=>x.id!==id);save();render()}}
-function novoParto(){
-  delete $('parto').dataset.edit;
-  $('partoTitle').textContent='Novo parto';
-  opts('bmat','f');
-  $('bdata').value=today(); $('bn').value=''; $('bv').value=''; $('bm').value='';
-  $('bsexo').value=''; $('bbrincos').value=''; $('bobs').value='';
-  show('parto');
-}
-function cadastrarCordeirosDoParto(x){
-  const raw=($('bbrincos').value||'').split(/[\n,;]+/).map(v=>v.trim()).filter(Boolean);
-  const unicos=[...new Set(raw)];
-  const existentes=[];
-  unicos.forEach(brinco=>{
-    if(db.animais.some(a=>String(a.num).trim().toLowerCase()===String(brinco).trim().toLowerCase())){
-      existentes.push(brinco); return;
-    }
-    db.animais.push({
-      id:Date.now()+Math.floor(Math.random()*1000000),
-      num:brinco,
-      name:'Cordeiro '+brinco,
-      race:'',
-      birth:x.data,
-      sexo:'f',
-      peso:0,
-      status:'Ativo',
-      motivoRetirada:'',
-      motivoObs:'',
-      obs:'Nascido no parto da ovelha '+nm(x.ovelha),
-      photo:'',
-      mae:x.ovelha,
-      partoId:x.id,
-      pesoNascimento:0,
-      dataPesoNascimento:x.data,
-      pesoDesmame:0,
-      dataPesoDesmame:'',
-      pesoVendaAbate:0,
-      dataPesoVendaAbate:'',
-      valorVendaPeso:0,
-      destinoPeso:'Venda'
-    });
-  });
-  if(existentes.length) alert('Estes brincos já estavam cadastrados e não foram duplicados: '+existentes.join(', '));
-  return unicos.length;
-}
-function saveBirth(){
-  let x={
-    id:Date.now(),ovelha:$('bmat').value,data:$('bdata').value||today(),
-    nasc:+$('bn').value||0,vivos:+$('bv').value||0,mortos:+$('bm').value||0,
-    sexo:$('bsexo').value,brincos:($('bbrincos').value||'').split(/[\n,;]+/).map(v=>v.trim()).filter(Boolean),
-    obs:$('bobs').value
-  };
-  if(!x.ovelha)return alert('Escolha a ovelha.');
-  if(x.vivos>0 && !x.brincos.length){
-    if(!confirm('Você informou cordeiros vivos, mas não colocou os números dos brincos. Salvar o parto mesmo assim?')) return;
-  }
-  db.partos.push(x);
-  if(x.brincos.length) cadastrarCordeirosDoParto(x);
-  save(); show('repro');
-}
-function editBirth(id){
-  let x=db.partos.find(a=>a.id===id); if(!x)return;
-  $('bmat').value=x.ovelha;$('bdata').value=x.data;$('bn').value=x.nasc;$('bv').value=x.vivos;$('bm').value=x.mortos;
-  $('bsexo').value=x.sexo||'';$('bbrincos').value=(x.brincos||[]).join('\n');$('bobs').value=x.obs||'';
-  $('partoTitle').textContent='Editar parto';$('parto').dataset.edit=id;show('parto')
-}
-$('parto').addEventListener('click',e=>{
-  if(e.target.tagName==='BUTTON'&&e.target.textContent.includes('Salvar')){
-    let id=$('parto').dataset.edit;
-    if(id){
-      let x=db.partos.find(a=>a.id==id);
-      Object.assign(x,{
-        ovelha:$('bmat').value,data:$('bdata').value,nasc:+$('bn').value||0,vivos:+$('bv').value||0,
-        mortos:+$('bm').value||0,sexo:$('bsexo').value,
-        brincos:($('bbrincos').value||'').split(/[\n,;]+/).map(v=>v.trim()).filter(Boolean),
-        obs:$('bobs').value
-      });
-      delete $('parto').dataset.edit; save();
-    }
-  }
-});
-function saveWean(){db.desmames.push({id:Date.now(),ovelha:$('dmat').value,data:$('ddate').value||today(),q:+$('dq').value||0,peso:+$('dp').value||0,dest:$('ddest').value});save();show('repro')}
-
-let sanEditId=null, sanMonths=[];
-const SAN_DEFAULTS=[
-  'Vacina carbúnculo','Cordeiros — 1ª dose','Cordeiros — 2ª dose','Rebanho adulto',
-  'Vacina podal','Cordeiros — 1ª dose (podal)','Cordeiros — 2ª dose (podal)','Rebanho adulto (podal)',
-  'Vacina leptospirose','Controle de coccidiose','Tosquia','Casqueamento',
-  'Encarneiramento','Avaliação ECC','Vermifugação','Cordeiros','Rebanho adulto','FAMACHA'
-];
-function novoSanitario(){
-  sanEditId=null; sanMonths=[];
-  $('sanTitle').textContent='Nova atividade sanitária';
-  $('sanName').value=''; $('sanObs').value='';
-  renderSanMonthPick(); show('sanForm');
-}
-function editSanitario(id){
-  let x=db.sanitario.find(a=>a.id===id); if(!x)return;
-  sanEditId=id; sanMonths=[...(x.meses||[])];
-  $('sanTitle').textContent='Editar atividade sanitária';
-  $('sanName').value=x.nome||''; $('sanObs').value=x.obs||'';
-  renderSanMonthPick(); show('sanForm');
-}
-function renderSanMonthPick(){
-  const names=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
-  $('sanMonthPick').innerHTML=names.map((n,i)=>`<button type="button" class="san-month ${sanMonths.includes(i+1)?'on':''}" onclick="toggleSanMonth(${i+1})">${n}</button>`).join('');
-}
-function toggleSanMonth(m){
-  sanMonths=sanMonths.includes(m)?sanMonths.filter(x=>x!==m):[...sanMonths,m].sort((a,b)=>a-b);
-  renderSanMonthPick();
-}
-function saveSanitario(){
-  let nome=$('sanName').value.trim();
-  if(!nome)return alert('Informe a atividade.');
-  let x={id:sanEditId||Date.now(),nome,obs:$('sanObs').value.trim(),meses:[...sanMonths]};
-  if(sanEditId){let i=db.sanitario.findIndex(a=>a.id===sanEditId);db.sanitario[i]=x}else db.sanitario.push(x);
-  save(); show('sanitario');
-}
-function delSanitario(id){
-  if(confirm('Excluir esta atividade do calendário?')){db.sanitario=db.sanitario.filter(x=>x.id!==id);save();render();}
-}
-function sanMonthNames(ms){
-  const n=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  return (ms||[]).map(m=>n[m-1]).join(', ')||'Sem mês definido';
-}
-function renderSanitario(){
-  const defaults=db.sanitario.length?db.sanitario:[];
-  $('sanRows').innerHTML=defaults.length?defaults.map(x=>`
-    <tr><td>${esc(x.nome)}<div class="small">${esc(x.obs||'')}</div></td>
-      ${Array.from({length:12},(_,i)=>`<td><button class="san-month ${x.meses?.includes(i+1)?'on':''}" onclick="toggleSanRow(${x.id},${i+1})">${x.meses?.includes(i+1)?'✓':'·'}</button></td>`).join('')}
-      <td class="san-del"><button class="secondary" onclick="editSanitario(${x.id})">✏️</button> <button class="danger" onclick="delSanitario(${x.id})">🗑️</button></td>
-    </tr>`).join(''):'<tr><td colspan="14"><div class="empty">Nenhuma atividade cadastrada. Toque em “+ Atividade” para começar.</div></td></tr>';
-  $('sanUpcoming').innerHTML=defaults.length?[...defaults].filter(x=>(x.meses||[]).length).sort((a,b)=>Math.min(...a.meses)-Math.min(...b.meses)).map(x=>`<div class="item"><b>📌 ${esc(x.nome)}</b><div class="small">Meses: ${esc(sanMonthNames(x.meses))}${x.obs?' • '+esc(x.obs):''}</div></div>`).join(''):'<div class="empty">Cadastre as atividades sanitárias da propriedade.</div>';
-}
-function toggleSanRow(id,m){
-  let x=db.sanitario.find(a=>a.id===id); if(!x)return;
-  x.meses=x.meses||[]; x.meses=x.meses.includes(m)?x.meses.filter(v=>v!==m):[...x.meses,m].sort((a,b)=>a-b);
-  save(); renderSanitario();
-}
-function initSanitarioDefaults(){
-  if(db.sanitario.length)return;
-  db.sanitario=SAN_DEFAULTS.map((nome,i)=>({id:Date.now()+i,nome,obs:'',meses:[]}));
-  save();
-}
-function novoFamacha(){
-  opts('faAnimal');
-  $('faData').value=today();
-  $('faScore').value='1';
-  $('faObs').value='';
-  show('famachaForm');
-}
-function saveFamacha(){
-  let animal=$('faAnimal').value;
-  let score=+$('faScore').value;
-  if(!animal)return alert('Escolha o animal.');
-  db.famacha.push({id:Date.now(),animal,data:$('faData').value||today(),score,obs:$('faObs').value});
-  save();show('famacha');
-}
-function delFamacha(id){
-  if(confirm('Excluir esta avaliação FAMACHA?')){
-    db.famacha=db.famacha.filter(x=>x.id!==id);save();render();
-  }
-}
-function novoSaude(){opts('hAnimal');$('hData').value=today();$('hProx').value='';$('hProd').value='';$('hDose').value='';$('hObs').value='';show('saudeForm')}
-function saveSaude(){db.saude.push({id:Date.now(),animal:$('hAnimal').value,tipo:$('hTipo').value,data:$('hData').value||today(),prox:$('hProx').value,prod:$('hProd').value,dose:$('hDose').value,obs:$('hObs').value});syncLoteStatus();save();show('saude')}
-function delSaude(id){if(confirm('Excluir registro?')){db.saude=db.saude.filter(x=>x.id!==id);save();render()}}
-function novoVenda(){opts('vAnimal');$('vData').value=today();$('vQtd').value='';$('vValor').value='';$('vCliente').value='';$('vObs').value='';show('vendaForm')}
-function saveVenda(){let x={id:Date.now(),tipo:$('vTipo').value,data:$('vData').value||today(),animal:$('vAnimal').value,qtd:+$('vQtd').value||0,valor:+$('vValor').value||0,cliente:$('vCliente').value,obs:$('vObs').value};if(x.valor<=0)return alert('Informe o valor.');db.vendas.push(x);if(x.tipo==='Animal vivo'&&x.animal){let a=db.animais.find(a=>String(a.id)===String(x.animal));if(a)a.status='Vendido'}db.financeiro.push({id:Date.now()+1,tipo:'Entrada',cat:'Venda de animal/carne',data:x.data,valor:x.valor,desc:x.tipo+' - '+nm(x.animal)});save();show('vendas')}
-function delVenda(id){if(confirm('Excluir venda?')){db.vendas=db.vendas.filter(x=>x.id!==id);save();render()}}
-function novoEstoque(){$('eData').value=today();$('eQtd').value='';$('eDesc').value='';show('estoqueForm')}
-function saveEstoque(){let q=+$('eQtd').value||0;if(q<=0)return alert('Informe a quantidade.');db.estoque.push({id:Date.now(),tipo:$('eTipo').value,item:$('eItem').value,data:$('eData').value||today(),qtd:q,desc:$('eDesc').value});save();show('estoque')}
-function delEstoque(id){if(confirm('Excluir movimento?')){db.estoque=db.estoque.filter(x=>x.id!==id);save();render()}}
-function novoFin(){$('fData').value=today();$('fValor').value='';$('fCat').value='';$('fDesc').value='';show('finForm')}
-function saveFin(){let v=+$('fValor').value||0;if(v<=0)return alert('Informe o valor.');db.financeiro.push({id:Date.now(),tipo:$('fTipo').value,cat:$('fCat').value||'Outros',data:$('fData').value||today(),valor:v,desc:$('fDesc').value});save();show('financeiro')}
-function delFin(id){if(confirm('Excluir lançamento?')){db.financeiro=db.financeiro.filter(x=>x.id!==id);save();render()}}
-function bal(item){return db.estoque.filter(x=>x.item===item).reduce((a,x)=>a+(x.tipo==='Entrada'?x.qtd:-x.qtd),0)}
-function daysUntil(s){if(!s)return 9999;return Math.ceil((new Date(s+'T00:00:00')-new Date(new Date().toDateString()))/86400000)}
-function vermCount(animalId){
-  return db.saude.filter(x=>String(x.animal)===String(animalId) && String(x.tipo).toLowerCase().includes('vermif')).length;
-}
-function precisaRetirar(a){
-  return a.status==='Retirar do lote' || vermCount(a.id)>=Number(db.config.limiteVermifugos||3);
-}
-function syncLoteStatus(){
-  let changed=false;
-  db.animais.forEach(a=>{
-    let n=vermCount(a.id);
-    if(n>=Number(db.config.limiteVermifugos||3) && a.status==='Ativo'){
-      a.status='Retirar do lote'; changed=true;
-    }
-  });
-  if(changed) save();
-}
-
-function renderAnimalList(k,id){let arr=db.animais.filter(a=>a.sexo===k);$(id).innerHTML=arr.length?arr.map(a=>`<div class="card animal">${a.photo?`<img class="photo" src="${a.photo}">`:`<div class="ph">${a.sexo==='f'?'🐑':'🐏'}</div>`}<div><div class="row"><h3 style="margin:0">${esc(a.num)} - ${esc(a.name)}</h3><span class="tag">${esc(a.status)}</span></div><div class="small">${esc(a.race||'Raça não informada')} • ${a.peso||0} kg • 💉 ${vermCount(a.id)} vermifugação(ões)</div>${precisaRetirar(a)?'<div class="notice" style="margin-top:8px">🚨 <b>RETIRAR DO LOTE</b><br>Motivo: '+esc(a.motivoRetirada||'Não informado')+'<br>'+esc(a.motivoObs||'')+'</div>':''}<p>${esc(a.obs||'')}</p><div class="actions"><button class="secondary" onclick="editAnimal(${a.id})">✏️ Editar</button><button class="secondary" onclick="histGo(${a.id})">📋 Histórico</button><button class="danger" onclick="delAnimal(${a.id})">🗑️ Excluir</button></div></div></div>`).join(''):'<div class="card empty">Nenhum animal cadastrado.</div>'}
-function histGo(id){opts('histAnimal');$('histAnimal').value=id;show('historico')}
-function renderHist(){let id=$('histAnimal').value;if(!id){$('histBox').innerHTML='';return}let a=db.animais.find(x=>String(x.id)===String(id));let h=[];db.repro.filter(x=>String(x.ovelha)===String(id)).forEach(x=>h.push([x.data,'Cobertura','Carneiro: '+nm(x.carneiro)]));db.partos.filter(x=>String(x.ovelha)===String(id)).forEach(x=>h.push([x.data,'Parto',`${x.nasc} nascidos • ${x.vivos} vivos • ${x.mortos} mortos`+(x.obs?' • '+x.obs:'')]));db.desmames.filter(x=>String(x.ovelha)===String(id)).forEach(x=>h.push([x.data,'Desmame',`${x.q} cordeiros • ${x.peso} kg médios • ${x.dest}`]));db.saude.filter(x=>String(x.animal)===String(id)).forEach(x=>h.push([x.data,x.tipo,`${x.prod||''} ${x.dose||''}`]));db.famacha.filter(x=>String(x.animal)===String(id)).forEach(x=>h.push([x.data,'FAMACHA','Escore '+x.score+(x.obs?' • '+x.obs:'')]));db.vendas.filter(x=>String(x.animal)===String(id)).forEach(x=>h.push([x.data,'Venda',`${x.tipo} • ${money(x.valor)}`]));if(a.status==='Retirar do lote'||a.motivoRetirada)h.push([today(),'Retirada do lote',`${a.motivoRetirada||'Não informado'}${a.motivoObs?' • '+a.motivoObs:''}`]);h.sort((a,b)=>a[0].localeCompare(b[0]));$('histBox').innerHTML=`<div class="card"><h3>${esc(a.num)} - ${esc(a.name)}</h3><p>Brinco: <b>${esc(a.num)}</b><br>Sexo: ${a.sexo==='f'?'Fêmea':'Macho'}<br>Raça: ${esc(a.race||'-')}<br>Nascimento: ${a.birth||'-'}<br>Peso atual: ${a.peso||0} kg</p><hr><h4>⚖️ Evolução de peso</h4><p>Ao nascer: <b>${a.pesoNascimento?a.pesoNascimento.toFixed(2):'-'} kg</b> ${a.dataPesoNascimento?'('+a.dataPesoNascimento+')':''}<br>Ao desmame: <b>${a.pesoDesmame?a.pesoDesmame.toFixed(2):'-'} kg</b> ${a.dataPesoDesmame?'('+a.dataPesoDesmame+')':''}<br>Venda/abate: <b>${a.pesoVendaAbate?a.pesoVendaAbate.toFixed(2):'-'} kg</b> ${a.dataPesoVendaAbate?'('+a.dataPesoVendaAbate+')':''}<br>Valor: <b>${a.valorVendaPeso?money(a.valorVendaPeso):'-'}</b> • Destino: ${esc(a.destinoPeso||'-')}</p></div>`+`<div class="card">${h.length?h.map(x=>`<div class="item"><b>${esc(x[1])}</b><div class="small">${esc(x[0])}</div><div>${esc(x[2])}</div></div>`).join(''):'<div class="empty">Nenhum histórico registrado.</div>'}</div>`}
-function pdfHistorico(){let box=$('histBox').innerHTML;if(!box)return alert('Selecione um animal.');printHtml('Ficha - OvinoControl',box)}
-function pdfRelatorio(){printHtml('Relatório - OvinoControl',$('rel').innerHTML)}
-function printHtml(title,body){let w=window.open('','_blank');if(!w)return alert('Permita a abertura de pop-ups para gerar o PDF.');w.document.write(`<html><head><title>${title}</title><style>body{font-family:Arial;padding:25px}h2,h3{color:#8b5a2b}.card{border:1px solid #ddd;border-radius:10px;padding:12px;margin:10px 0}.item{padding:8px 0;border-bottom:1px solid #ddd}</style></head><body><h1>🐑 ${title}</h1>${body}<script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close()}
-function alerts(){syncLoteStatus();let d=Number(db.config.dias)||2, a=[];db.famacha.forEach(x=>{if(+x.score>=4)a.push(`👁️ FAMACHA ${x.score}: ${nm(x.animal)} precisa de atenção`)});db.animais.forEach(x=>{if(precisaRetirar(x))a.push(`🚨 RETIRAR DO LOTE: ${nm(x.id)} recebeu ${vermCount(x.id)} vermifugação(ões) (limite: ${Number(db.config.limiteVermifugos||3)})`)});db.repro.forEach(x=>{if(x.prev&&daysUntil(x.prev)<=d&&daysUntil(x.prev)>=0)a.push(`❤️ Parto previsto: ${nm(x.ovelha)} em ${x.prev}`)});db.saude.forEach(x=>{if(x.prox&&daysUntil(x.prox)<=d&&daysUntil(x.prox)>=0)a.push(`💉 ${x.tipo} de ${nm(x.animal)} em ${x.prox}`)});return a}
-function renderRetirar(){
-  syncLoteStatus();
-  let arr=db.animais.filter(a=>precisaRetirar(a));
-  $('retCount').textContent=arr.length+' '+(arr.length===1?'animal':'animais');
-  $('retList').innerHTML=arr.length?arr.map(a=>`
-    <div class="card animal">
-      ${a.photo?`<img class="photo" src="${a.photo}">`:`<div class="ph">${a.sexo==='f'?'🐑':'🐏'}</div>`}
-      <div>
-        <div class="row"><h3 style="margin:0">${esc(a.num)} - ${esc(a.name)}</h3><span class="tag">RETIRAR</span></div>
-        <div class="small">${a.sexo==='f'?'Ovelha':'Carneiro'} • ${esc(a.race||'Raça não informada')} • 💉 ${vermCount(a.id)} vermifugação(ões)</div>
-        <div class="notice" style="margin-top:8px"><b>Motivo:</b> ${esc(a.motivoRetirada||'Não informado')}<br>${esc(a.motivoObs||'')}</div>
-        <div class="actions">
-          <button onclick="editAnimal(${a.id})">✏️ Editar</button>
-          <button class="secondary" onclick="histGo(${a.id})">📋 Histórico</button>
-          <button class="gold" onclick="marcarRetiradaResolvida(${a.id})">✅ Manter no lote</button>
-        </div>
-      </div>
-    </div>`).join(''):'<div class="card empty">🎉 Nenhum animal precisa ser retirado do lote.</div>';
-}
-function marcarRetiradaResolvida(id){
-  let a=db.animais.find(x=>x.id===id);
-  if(!a)return;
-  if(confirm('Marcar este animal novamente como Ativo? O histórico de vermifugações será mantido.')){
-    a.status='Ativo';
-    save();
-    render();
-  }
-}
-function renderFamacha(){
-  let list=[...db.famacha].reverse();
-  let high=db.famacha.filter(x=>+x.score>=4).length;
-  $('fa4').textContent=high;
-  $('faTotal').textContent=db.famacha.length;
-  $('famachaList').innerHTML=list.length?list.map(x=>`
-    <div class="item">
-      <div class="row">
-        <b>👁️ ${esc(nm(x.animal))}</b>
-        <span class="tag"><span class="fa-color fa${x.score}" style="width:18px;height:18px;margin-right:5px"></span>Escore ${x.score}</span>
-      </div>
-      <div class="small">${esc(x.data)}</div>
-      <div>${esc(x.obs||'')}</div>
-      <div class="actions"><button class="danger" onclick="delFamacha(${x.id})">🗑️ Excluir</button></div>
-    </div>`).join(''):'<div class="empty">Nenhuma avaliação FAMACHA registrada.</div>';
-}
-function render(){renderSanitario();renderFamacha();renderRetirar();opts('rmat','f');opts('rmac','m');opts('bmat','f');opts('dmat','f');opts('hAnimal');opts('histAnimal');opts('vAnimal');renderAnimalList('f','fList');renderAnimalList('m','mList');
-let f=animals('f').length,m=animals('m').length,pren=db.repro.filter(x=>x.prev&&daysUntil(x.prev)>=0).length,n=db.partos.reduce((a,x)=>a+x.nasc,0),d=db.desmames.reduce((a,x)=>a+x.q,0),mort=db.partos.reduce((a,x)=>a+x.mortos,0)+db.animais.filter(x=>x.status==='Mort0').length;
-let venda=db.vendas.reduce((a,x)=>a+x.valor,0),fe=db.financeiro.filter(x=>x.tipo==='Entrada').reduce((a,x)=>a+x.valor,0),fs=db.financeiro.filter(x=>x.tipo==='Saída').reduce((a,x)=>a+x.valor,0),r=bal('racao'),c=bal('carne');
-$('sF').textContent=f;$('sM').textContent=m;$('sP').textContent=pren;$('sN').textContent=n;$('sD').textContent=d;$('sMort').textContent=mort;$('sVenda').textContent=money(venda);$('sSaldo').textContent=money(fe-fs);$('sRacao').textContent=r.toFixed(2)+' kg';$('sCarne').textContent=c.toFixed(2)+' kg';$('eRacao').textContent=r.toFixed(2)+' kg';$('eCarne').textContent=c.toFixed(2)+' kg';$('fE').textContent=money(fe);$('fS').textContent=money(fs);$('fB').textContent=money(fe-fs);$('vAnim').textContent=money(db.vendas.filter(x=>x.tipo==='Animal vivo').reduce((a,x)=>a+x.valor,0));$('vCarne').textContent=money(db.vendas.filter(x=>x.tipo==='Carne').reduce((a,x)=>a+x.valor,0));$('rrN').textContent=n;$('rrD').textContent=d;$('rrP').textContent=db.partos.length;$('rrMort').textContent=mort;$('rrVenda').textContent=money(venda);$('rrSaldo').textContent=money(fe-fs);
-let al=alerts();$('homeAlerts').innerHTML=al.length?`<div class="notice">🔔 <b>Você tem ${al.length} alerta(s)</b><br>${al.slice(0,3).map(esc).join('<br>')}</div>`:'';$('alertList').innerHTML=al.length?al.map(x=>`<div class="item">${esc(x)}</div>`).join(''):'<div class="empty">Nenhum alerta próximo.</div>';
-let ev=[...db.repro.filter(x=>x.prev)].sort((a,b)=>a.prev.localeCompare(b.prev)).slice(0,5).map(x=>`Parto: ${nm(x.ovelha)} • ${x.prev}`);$('events').innerHTML=ev.length?ev.map(esc).join('<br>'):'<div class="empty">Nenhum evento cadastrado.</div>';
-$('reproList').innerHTML=db.repro.length?[...db.repro].reverse().map(x=>`<div class="item"><b>❤️ ${esc(nm(x.ovelha))}</b><div class="small">Cobertura: ${esc(x.data)} • Parto previsto: ${esc(x.prev||'-')} • Carneiro: ${esc(nm(x.carneiro))}</div><div class="actions"><button class="secondary" onclick="editRepro(${x.id})">✏️ Editar</button><button class="danger" onclick="delRepro(${x.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhuma cobertura registrada.</div>';
-$('rp').textContent=pren;$('rb').textContent=db.partos.length;
-$('healthList').innerHTML=db.saude.length?[...db.saude].reverse().map(x=>`<div class="item"><b>💉 ${esc(x.tipo)} • ${esc(nm(x.animal))}</b><div class="small">${esc(x.data)}${x.prox?' • Próximo: '+esc(x.prox):''}</div><div>${esc(x.prod||'')} ${esc(x.dose||'')}</div><div class="actions"><button class="danger" onclick="delSaude(${x.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum registro de saúde.</div>';
-$('salesList').innerHTML=db.vendas.length?[...db.vendas].reverse().map(x=>`<div class="item"><div class="row"><b>💰 ${esc(x.tipo)}</b><b class="in">${money(x.valor)}</b></div><div class="small">${esc(x.data)} • ${esc(nm(x.animal))} • ${esc(x.cliente||'')}</div><div class="actions"><button class="danger" onclick="delVenda(${x.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhuma venda registrada.</div>';
-$('stockList').innerHTML=db.estoque.length?[...db.estoque].reverse().map(x=>`<div class="item"><div class="row"><b>${x.tipo==='Entrada'?'➕':'➖'} ${x.item==='racao'?'Ração':'Carne'}</b><b class="${x.tipo==='Entrada'?'in':'out'}">${x.tipo==='Entrada'?'+':'-'}${x.qtd} kg</b></div><div class="small">${esc(x.data)} • ${esc(x.desc||'')}</div><div class="actions"><button class="danger" onclick="delEstoque(${x.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum movimento.</div>';
-$('finList').innerHTML=db.financeiro.length?[...db.financeiro].reverse().map(x=>`<div class="item"><div class="row"><b>${x.tipo==='Entrada'?'➕':'➖'} ${esc(x.cat)}</b><b class="${x.tipo==='Entrada'?'in':'out'}">${money(x.valor)}</b></div><div class="small">${esc(x.data)} • ${esc(x.desc||'')}</div><div class="actions"><button class="danger" onclick="delFin(${x.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum lançamento.</div>';
-$('cfgNome').value=db.config.nome||'';$('cfgDias').value=db.config.dias??2;$('cfgVerm').value=db.config.limiteVermifugos??3;$('cfgTema').value=db.config.tema||'claro';$('repro').dataset.x='';$('historico').dataset.x='';
-}
-function saveConfig(){db.config.nome=$('cfgNome').value;db.config.dias=+$('cfgDias').value||0;db.config.limiteVermifugos=Math.max(1,+$('cfgVerm').value||3);db.config.tema=$('cfgTema').value;save();setTema(db.config.tema);alert('Configurações salvas.')}
-function setTema(v){document.body.classList.toggle('dark',v==='escuro');db.config.tema=v;save()}
-function backup(){let b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='backup-ovinocontrol.json';a.click()}
-function restore(inp){let f=inp.files[0],r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();location.reload()}catch(e){alert('Backup inválido')}};r.readAsText(f)}
-let sx=0,sy=0;function swipe(){main.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});main.addEventListener('touchend',e=>{let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.2)return;let order=['home','alertas','femeas','machos','repro','saude','historico','vendas','estoque','financeiro','rel','sanitario','famacha','retirar','config'],i=order.indexOf(document.querySelector('.page.active').id);i+=dx<0?1:-1;if(i<0)i=order.length-1;if(i>=order.length)i=0;show(order[i],document.querySelectorAll('#nav button')[i])},{passive:true})}
-(function(){initSanitarioDefaults();syncLoteStatus();if(db.config.tema==='escuro')document.body.classList.add('dark');$('bdata').value=today();$('ddate').value=today();$('hData').value=today();$('vData').value=today();$('eData').value=today();$('fData').value=today();swipe();render()})();
+function novoAnimal(){['brinco','nome','raca','nasc','peso','pesoN','pesoD','obs'].forEach(x=>$(x).value='');show('animalForm')}
+function saveAnimal(){if(!$('brinco').value)return alert('Informe o brinco.');db.animais.push({id:Date.now(),brinco:$('brinco').value,nome:$('nome').value,sexo:$('sexo').value,raca:$('raca').value,nasc:$('nasc').value,peso:+$('peso').value||0,pesoN:+$('pesoN').value||0,pesoD:+$('pesoD').value||0,obs:$('obs').value});save();show('animais')}
+function delAnimal(id){if(confirm('Excluir este animal?')){db.animais=db.animais.filter(x=>x.id!==id);save();render()}}
+function novoLote(){['lorigem','lq','lpeso','lcompra','lfrete','lracao','lmed','loutros','lpesoAbate','lpreco','labate','lemb','ltrans','lobs'].forEach(x=>$(x).value='');$('ld').value=today();$('lrend').value=45;calcLote();show('loteForm')}
+['lq','lpeso','lcompra','lfrete','lracao','lmed','loutros','lpesoAbate','lrend','lpreco','labate','lemb','ltrans'].forEach(id=>document.addEventListener('input',e=>{if(e.target.id===id)calcLote()}));
+function calcLote(){let compra=+$('lcompra')?.value||0,extras=(+$('lfrete')?.value||0)+(+$('lracao')?.value||0)+(+$('lmed')?.value||0)+(+$('loutros')?.value||0)+(+$('labate')?.value||0)+(+$('lemb')?.value||0)+(+$('ltrans')?.value||0),peso=+$('lpesoAbate')?.value||0,r=(+$('lrend')?.value||0)/100,preco=+$('lpreco')?.value||0,carne=peso*r,receita=carne*preco,custo=compra+extras,lucro=receita-custo;if($('lres'))$('lres').innerHTML=`⚖️ Carne estimada: <b>${carne.toFixed(2)} kg</b><br>💰 Custo total: <b>${money(custo)}</b><br>📈 Receita prevista: <b>${money(receita)}</b><br>✅ <b>Lucro previsto: ${money(lucro)}</b>`;return {compra,extras,peso,r,carne,receita,custo,lucro}}
+function saveLote(){let c=calcLote();if(!$('lq').value||!$('lcompra').value)return alert('Informe quantidade e valor da compra.');let x={id:Date.now(),data:$('ld').value||today(),origem:$('lorigem').value,qtd:+$('lq').value||0,pesoCompra:+$('lpeso').value||0,compra:c.compra,frete:+$('lfrete').value||0,racao:+$('lracao').value||0,med:+$('lmed').value||0,outros:+$('loutros').value||0,pesoAbate:c.peso,rend:+$('lrend').value||0,preco:+$('lpreco').value||0,abate:+$('labate').value||0,emb:+$('lemb').value||0,trans:+$('ltrans').value||0,carne:c.carne,receita:c.receita,custo:c.custo,lucro:c.lucro,obs:$('lobs').value,status:'Em engorda'};db.lotes.push(x);save();show('abate')}
+function delLote(id){if(confirm('Excluir este lote?')){db.lotes=db.lotes.filter(x=>x.id!==id);save();render()}}
+function saveSaude(){if(!$('hAnimal').value)return alert('Cadastre um animal primeiro.');db.saude.push({id:Date.now(),animal:$('hAnimal').value,tipo:$('hTipo').value,data:$('hData').value||today(),obs:$('hObs').value});save();render()}
+function setTema(v){db.config.tema=v;document.body.classList.toggle('dark',v==='escuro');save()}
+function backup(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.download='backup-ovinocontrol.json';a.click()}
+function render(){let invest=db.lotes.reduce((a,x)=>a+x.custo,0),lucro=db.lotes.reduce((a,x)=>a+x.lucro,0),gastos=db.lotes.reduce((a,x)=>a+(x.custo-x.compra),0),rec=db.lotes.reduce((a,x)=>a+x.receita,0);$('qAnim').textContent=db.animais.length;$('qAbate').textContent=db.lotes.length;$('invest').textContent=money(invest);$('lucro').textContent=money(lucro);$('abInvest').textContent=money(invest);$('abGastos').textContent=money(gastos);$('abReceita').textContent=money(rec);$('abLucro').textContent=money(lucro);
+$('animalList').innerHTML=db.animais.length?db.animais.map(a=>`<div class="card"><div class="row"><b>🐑 ${a.brinco} — ${a.nome||'Sem nome'}</b><button class="danger" onclick="delAnimal(${a.id})">Excluir</button></div><div class="small">${a.sexo} • ${a.raca||'-'} • ${a.peso||0} kg</div><div>Peso nascer: ${a.pesoN||'-'} kg • Desmame: ${a.pesoD||'-'} kg</div></div>`).join(''):'<div class="card empty">Nenhum animal cadastrado.</div>';
+$('loteList').innerHTML=db.lotes.length?db.lotes.slice().reverse().map(x=>`<div class="card"><div class="row"><h3 style="margin:0">🥩 ${x.origem||'Outra granja'}</h3><span>${x.status}</span></div><div class="small">${x.data} • ${x.qtd} cordeiro(s) • ${x.pesoCompra.toFixed(1)} kg comprados</div><p>Compra: <b>${money(x.compra)}</b><br>Gastos extras: <b>${money(x.custo-x.compra)}</b><br>Carne estimada: <b>${x.carne.toFixed(2)} kg</b><br>Receita prevista: <b>${money(x.receita)}</b><br>🎯 <b>Lucro previsto: ${money(x.lucro)}</b></p><div class="actions"><button class="danger" onclick="delLote(${x.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="card empty">Nenhum lote comprado para abate.</div>';
+$('homeAbate').innerHTML=db.lotes.length?`🥩 <b>Compra para abate</b><br>${db.lotes.length} lote(s) • Investimento ${money(invest)} • Lucro previsto ${money(lucro)}`:'🥩 Nenhum lote para abate cadastrado.';
+$('hAnimal').innerHTML=db.animais.map(a=>`<option value="${a.id}">${a.brinco} - ${a.nome||''}</option>`).join('');
+$('healthList').innerHTML=db.saude.slice().reverse().map(x=>{let a=db.animais.find(a=>a.id==x.animal);return `<div class="item"><b>${x.tipo}</b> — ${a?.brinco||'-'}<div class="small">${x.data}</div></div>`}).join('')||'<div class="empty">Nenhum registro.</div>';
+$('sanList').innerHTML='<div class="item">💉 Vacinas — conforme calendário da propriedade</div><div class="item">💊 Vermifugação — acompanhar necessidade e orientação técnica</div><div class="item">✂️ Tosquia / casqueamento — programar conforme manejo</div><div class="item">👁️ FAMACHA — avaliar periodicamente</div>';
+$('fin').innerHTML=`<div class="card stat"><b>${money(rec)}</b>Receita prevista</div><div class="card stat"><b>${money(invest)}</b>Investimento</div><div class="card stat"><b>${money(lucro)}</b>Lucro previsto</div>`;
+$('tema').value=db.config.tema||'claro'}
+if(db.config.tema==='escuro')document.body.classList.add('dark');$('ld').value=today();$('hData').value=today();render();
 </script>
 </body>
 </html>
