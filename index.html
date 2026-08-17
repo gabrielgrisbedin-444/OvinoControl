@@ -8,7 +8,7 @@
 <style>
 :root{--g:#8b5a2b;--gl:#f5eadf;--bg:#f6f7f5;--card:#fff;--t:#29251f;--m:#77736c;--l:#e1e1dc;--red:#b9382f;--green:#23824a}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--t)}
-header{background:var(--g);color:#fff;padding:18px 16px;font-size:25px;font-weight:800;position:sticky;top:0;z-index:5}.drawer{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:20000}
+header{background:var(--g);color:#fff;padding:18px 16px;font-size:25px;font-weight:800;position:sticky;top:0;z-index:11000}.drawer{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:20000}
 .drawer.open{display:block}.drawer-panel{position:absolute;left:0;right:0;top:0;background:var(--card);max-height:85vh;overflow:auto;border-radius:0 0 18px 18px;padding:12px}
 .drawer-head{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:20px;padding:8px 4px 12px}
 .drawer-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.drawer-grid button{min-height:58px;font-size:14px}
@@ -43,29 +43,7 @@ body.dark{--g:#c58a55;--gl:#3a2b20;--bg:#11120f;--card:#1b1d19;--t:#f2eee8;--m:#
 </style>
 </head>
 <body>
-<header><span>🐑 OvinoControl</span><button id="menuBtn" onclick="toggleMenu()" aria-label="Abrir menu">☰ Menu</button></header><div id="drawer" class="drawer" onclick="if(event.target===this)toggleMenu()">
-<div class="drawer-panel">
-<div class="drawer-head"><span>☰ Menu do OvinoControl</span><button class="secondary" onclick="toggleMenu()">✕ Fechar</button></div>
-<div class="drawer-grid">
-<button onclick="goMenu('home')">🏠 Início</button>
-<button onclick="goMenu('femeas')">🐑 Ovelhas</button>
-<button onclick="goMenu('cordeiros')">🐣 Cordeiros</button>
-<button onclick="goMenu('machos')">🐏 Carneiros</button>
-<button onclick="goMenu('repro')">❤️ Reprodução</button>
-<button onclick="goMenu('saude')">💉 Saúde</button>
-<button onclick="goMenu('famacha')">👁️ FAMACHA</button>
-<button onclick="goMenu('sanitario')">📅 Sanitário</button>
-<button onclick="goMenu('retirar')">🚨 Retirar</button>
-<button onclick="goMenu('abate')">🥩 Abate</button>
-<button onclick="goMenu('financeiro')">💰 Financeiro</button>
-<button onclick="goMenu('pesagens')">⚖️ Pesagens</button>
-<button onclick="goMenu('racao')">🌾 Ração</button>
-<button onclick="goMenu('relatorios')">📊 Relatórios</button>
-<button onclick="goMenu('ranking')">🏆 Ranking</button>
-<button onclick="goMenu('metas')">🎯 Metas</button>
-<button onclick="goMenu('custos')">💵 Custos</button>
-<button onclick="goMenu('config')">⚙️ Configurações</button>
-</div></div></div>
+<header><span>🐑 OvinoControl</span></header>
 <div id="navHint" style="text-align:center;font-size:12px;color:var(--m);padding:5px;background:#fff">👆 Deslize as abas para os lados e toque na que quiser</div>
 <main>
 
@@ -270,27 +248,27 @@ body.dark{--g:#c58a55;--gl:#3a2b20;--bg:#11120f;--card:#1b1d19;--t:#f2eee8;--m:#
 <section id="config" class="page"><h2>⚙️ Configurações</h2><div class="card"><label>Nome da propriedade</label><input id="cfgNome"><label>Limite de vermifugações para retirar do lote</label><input id="cfgVerm" type="number" min="1" value="3"><div class="small">Ex.: 3 = na 3ª vermifugação registrada, o animal entra nos alertas de retirada.</div><label>Aparência</label><select id="cfgTema"><option value="claro">Claro</option><option value="escuro">Escuro</option></select><div class="actions"><button onclick="saveConfig()">Salvar</button><button class="secondary" onclick="backup()">💾 Backup</button><button class="secondary" onclick="document.getElementById('restore').click()">↩️ Restaurar</button><input id="restore" type="file" accept=".json" style="display:none" onchange="restoreDb(this)"></div></div></section>
 
 </main>
-<nav id="nav" aria-label="Navegação principal">
-<button class="active" onclick="show('home',this)">🏠<br>Início</button>
-<button onclick="show('femeas',this)">🐑<br>Ovelhas</button>
-<button onclick="show('cordeiros',this)">🐣<br>Cordeiros</button>
-<button onclick="show('machos',this)">🐏<br>Carneiros</button>
-<button onclick="show('repro',this)">❤️<br>Reprodução</button>
-<button onclick="show('saude',this)">💉<br>Saúde</button>
-<button onclick="show('famacha',this)">👁️<br>FAMACHA</button>
-<button onclick="show('sanitario',this)">📅<br>Sanitário</button>
-<button onclick="show('retirar',this)">🚨<br>Retirar</button>
-<button onclick="show('abate',this)">🥩<br>Abate</button>
-<button onclick="show('financeiro',this)">💰<br>Financeiro</button>
-<button onclick="show('pesagens',this)">⚖️<br>Pesagens</button>
-<button onclick="show('racao',this)">🌾<br>Ração</button>
-<button onclick="show('relatorios',this)">📊<br>Relatórios</button>
-<button onclick="show('ranking',this)">🏆<br>Ranking</button>
-<button onclick="show('carneiros',this)">🐏<br>Carneiros</button>
-<button onclick="show('metas',this)">🎯<br>Metas</button>
-<button onclick="show('custos',this)">💵<br>Custos</button>
-<button onclick="show('config',this)">⚙️<br>Config.</button>
-</nav>
+<nav id="nav" aria-label="Navegação principal" style="display:none"></nav>
+<div id="quickNav" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--l);position:sticky;top:0;z-index:10000">
+<a href="#home" onclick="show('home',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🏠 Início</button></a>
+<a href="#femeas" onclick="show('femeas',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🐑 Ovelhas</button></a>
+<a href="#cordeiros" onclick="show('cordeiros',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🐣 Cordeiros</button></a>
+<a href="#machos" onclick="show('machos',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🐏 Carneiros</button></a>
+<a href="#repro" onclick="show('repro',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">❤️ Reprodução</button></a>
+<a href="#saude" onclick="show('saude',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">💉 Saúde</button></a>
+<a href="#famacha" onclick="show('famacha',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">👁️ FAMACHA</button></a>
+<a href="#sanitario" onclick="show('sanitario',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">📅 Sanitário</button></a>
+<a href="#retirar" onclick="show('retirar',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🚨 Retirar</button></a>
+<a href="#abate" onclick="show('abate',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🥩 Abate</button></a>
+<a href="#financeiro" onclick="show('financeiro',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">💰 Financeiro</button></a>
+<a href="#pesagens" onclick="show('pesagens',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">⚖️ Pesagens</button></a>
+<a href="#racao" onclick="show('racao',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🌾 Ração</button></a>
+<a href="#relatorios" onclick="show('relatorios',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">📊 Relatórios</button></a>
+<a href="#ranking" onclick="show('ranking',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🏆 Ranking</button></a>
+<a href="#metas" onclick="show('metas',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🎯 Metas</button></a>
+<a href="#custos" onclick="show('custos',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">💵 Custos</button></a>
+<a href="#config" onclick="show('config',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">⚙️ Configurações</button></a>
+</div>
 
 <script>
 const KEY='ovinocontrol_v1';
