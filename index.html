@@ -282,13 +282,17 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 function toggleMenu(){document.getElementById('drawer').classList.toggle('open')}
 function goMenu(id){toggleMenu();show(id,null)}
 function show(id,b){
-document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-var target=$(id); if(!target)return;
-target.classList.add('active');
-document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('active'));
-if(b)b.classList.add('active');
-render();
-window.scrollTo(0,0);
+try{
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  var target=document.getElementById(id);
+  if(!target)return;
+  target.classList.add('active');
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('active'));
+  if(b)b.classList.add('active');
+  try{render();}catch(e){console.log('Render:',e);}
+  window.scrollTo({top:0,behavior:'instant'});
+}catch(e){console.log('Navegação:',e);}
+return false;
 }
 function activeAnimals(s){return db.animais.filter(a=>a.sexo===s&&a.status!=='Vendido'&&a.status!=='Mort0')}
 function nameAnimal(id){let a=db.animais.find(x=>String(x.id)===String(id));return a?(a.num||'')+' - '+(a.name||''):'Animal não encontrado'}
@@ -553,6 +557,17 @@ if($('animalPhoto'))$('animalPhoto').addEventListener('change',e=>{let f=e.targe
 
 
 if(db.config.tema==='escuro')document.body.classList.add('dark');['hData','faData','rData','bData','lData'].forEach(id=>$(id).value=today());render()})();
+</script>
+<script>
+document.addEventListener('click',function(ev){
+  var a=ev.target.closest('#quickNav a');
+  if(!a)return;
+  var m=(a.getAttribute('href')||'').replace('#','');
+  if(!m)return;
+  ev.preventDefault();
+  ev.stopImmediatePropagation();
+  show(m,null);
+},true);
 </script>
 </body>
 </html>
