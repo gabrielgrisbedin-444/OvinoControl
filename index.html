@@ -16,6 +16,16 @@ button{border:0;border-radius:10px;padding:10px 13px;background:var(--g);color:#
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{flex:1;min-width:105px}
 label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}input,select,textarea{width:100%;padding:10px;border:1px solid #d5d8d2;border-radius:9px;background:var(--card);color:var(--t);font:inherit}textarea{min-height:70px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}
 .notice{background:#fff8df;border:1px solid #eadb9c;border-radius:10px;padding:10px;font-size:12px;margin-bottom:10px}
+.lamb-status{display:inline-block;padding:5px 9px;border-radius:999px;background:var(--gl);color:var(--g);font-size:12px;font-weight:700}
+.chartbar{height:14px;background:#eee;border-radius:8px;overflow:hidden;margin:5px 0}.chartbar i{display:block;height:100%;background:var(--g)}
+.metric{font-size:12px;color:var(--m)}.metric strong{font-size:20px;color:var(--g)}
+.photo-box{display:flex;gap:10px;align-items:center}.photo-box img{width:72px;height:72px;border-radius:12px;object-fit:cover;display:none}
+.rankbox{padding:10px 0;border-bottom:1px solid var(--l)}.rankbox:last-child{border-bottom:0}
+.progress{height:12px;background:#eee;border-radius:8px;overflow:hidden}.progress i{display:block;height:100%;background:var(--g)}
+
+
+.lamb-actions button{min-width:110px}
+
 nav{position:fixed;bottom:0;left:0;right:0;height:90px;background:var(--card);border-top:1px solid var(--l);display:flex;overflow-x:auto;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
 nav button{background:transparent;color:var(--m);border-radius:0;min-width:88px;height:90px;flex:0 0 auto;font-size:11px}nav button.active{color:var(--g)}
 .famacha-table{width:100%;border-collapse:separate;border-spacing:0 7px}.famacha-table td{padding:9px;background:var(--bg)}.famacha-table td:first-child{border-radius:9px 0 0 9px;width:55px;text-align:center}.famacha-table td:last-child{border-radius:0 9px 9px 0}
@@ -55,6 +65,46 @@ body.dark{--g:#c58a55;--gl:#3a2b20;--bg:#11120f;--card:#1b1d19;--t:#f2eee8;--m:#
 
 <section id="femeas" class="page"><div class="row"><h2>🐑 Ovelhas</h2><button onclick="novoAnimal('f')">+ Nova</button></div><div id="fList"></div></section>
 <section id="machos" class="page"><div class="row"><h2>🐏 Carneiros</h2><button onclick="novoAnimal('m')">+ Novo</button></div><div id="mList"></div></section>
+
+
+<section id="cordeiros" class="page">
+<div class="row"><h2>🐑 Cordeiros</h2><button onclick="novoCordeiro()">+ Novo cordeiro</button></div>
+<div class="grid">
+<div class="card stat"><b id="lambMamando">0</b> Mamando</div>
+<div class="card stat"><b id="lambDesmamados">0</b> Desmamados</div>
+<div class="card stat"><b id="lambEngorda">0</b> Em engorda</div>
+<div class="card stat"><b id="lambCriadeira">0</b> Na criadeira</div>
+</div>
+<div class="notice">Cadastre cada cordeiro individualmente pelo brinco. Depois do nascimento, faça o desmame e escolha o destino: 🌾 Engorda, 🐑 Criadeira, 🥩 Abate ou ❤️ Reprodução.</div>
+<div id="lambList"></div>
+</section>
+
+<section id="cordeiroForm" class="page">
+<h2 id="lambTitle">Novo cordeiro</h2>
+<div class="card">
+<div class="formgrid">
+<div><label>Brinco / número</label><input id="lNum" placeholder="COR001"></div>
+<div><label>Nome</label><input id="lName" placeholder="Ex.: Cordeiro 001"></div>
+<div><label>Sexo</label><select id="lSex"><option value="f">Fêmea</option><option value="m">Macho</option></select></div>
+<div><label>Raça</label><input id="lRace"></div>
+<div><label>Data de nascimento</label><input id="lBirth" type="date"></div>
+<div><label>Pai / carneiro</label><select id="lPai"></select></div>
+<div><label>Mãe / ovelha</label><select id="lMae"></select></div>
+<div><label>Peso ao nascer (kg)</label><input id="lPesoNasc" type="number" step=".01"></div>
+<div><label>Peso atual (kg)</label><input id="lPeso" type="number" step=".01"></div>
+<div><label>Data do desmame</label><input id="lDesm" type="date"></div>
+<div><label>Peso no desmame (kg)</label><input id="lPesoDesm" type="number" step=".01"></div>
+<div><label>Status</label><select id="lStatus">
+<option>Mamando</option><option>Desmamado</option><option>Engorda</option><option>Criadeira</option><option>Abate</option><option>Reprodução</option><option>Vendido</option><option>Mort0</option>
+</select></div>
+<div class="full"><label>Observações</label><textarea id="lObs2"></textarea></div>
+</div>
+<div class="actions">
+<button class="secondary" onclick="show('cordeiros')">Cancelar</button>
+<button onclick="saveCordeiro()">Salvar cordeiro</button>
+</div>
+</div>
+</section>
 
 <section id="animal" class="page"><h2 id="animalTitle">Novo animal</h2><div class="card">
 <div class="formgrid">
@@ -109,12 +159,91 @@ body.dark{--g:#c58a55;--gl:#3a2b20;--bg:#11120f;--card:#1b1d19;--t:#f2eee8;--m:#
 
 <section id="financeiro" class="page"><h2>💰 Financeiro</h2><div class="grid"><div class="card stat"><b id="finEntr">R$ 0,00</b>Entradas</div><div class="card stat"><b id="finSai">R$ 0,00</b>Saídas</div><div class="card stat"><b id="finSaldo">R$ 0,00</b>Saldo</div></div><div id="finList" class="card"></div></section>
 
+
+<section id="pesagens" class="page">
+<div class="row"><h2>⚖️ Pesagens</h2><button onclick="novaPesagem()">+ Pesagem</button></div>
+<div class="grid">
+<div class="card stat"><b id="pesoMedia">0 kg</b>Peso médio</div>
+<div class="card stat"><b id="ganhoMedio">0 kg</b>Ganho médio</div>
+</div>
+<div id="pesoList"></div>
+</section>
+
+<section id="pesagemForm" class="page"><h2>Nova pesagem</h2><div class="card">
+<label>Animal</label><select id="peAnimal"></select>
+<div class="formgrid"><div><label>Data</label><input id="peData" type="date"></div><div><label>Peso (kg)</label><input id="pePeso" type="number" step=".01"></div></div>
+<label>Observações</label><textarea id="peObs"></textarea>
+<div class="actions"><button class="secondary" onclick="show('pesagens')">Cancelar</button><button onclick="savePesagem()">Salvar</button></div>
+</div></section>
+
+<section id="racao" class="page">
+<div class="row"><h2>🌾 Ração</h2><button onclick="novaRacao()">+ Movimento</button></div>
+<div class="grid"><div class="card stat"><b id="racaoSaldo">0 kg</b>Estoque</div><div class="card stat"><b id="racaoCusto">R$ 0</b>Valor comprado</div></div>
+<div id="racaoList"></div>
+</section>
+<section id="racaoForm" class="page"><h2>Movimento de ração</h2><div class="card">
+<div class="formgrid"><div><label>Tipo</label><select id="raTipo"><option>Entrada</option><option>Saída</option></select></div><div><label>Data</label><input id="raData" type="date"></div>
+<div><label>Produto</label><input id="raProd"></div><div><label>Quantidade (kg)</label><input id="raQtd" type="number" step=".01"></div>
+<div><label>Valor (R$)</label><input id="raValor" type="number" step=".01"></div><div><label>Fornecedor</label><input id="raForn"></div></div>
+<div class="actions"><button class="secondary" onclick="show('racao')">Cancelar</button><button onclick="saveRacao()">Salvar</button></div>
+</div></section>
+
+<section id="relatorios" class="page"><h2>📊 Relatórios</h2>
+<div class="grid">
+<div class="card stat"><b id="repNasc">0</b>Nascimentos</div><div class="card stat"><b id="repDesm">0</b>Desmamados</div>
+<div class="card stat"><b id="repMort">0</b>Mortes</div><div class="card stat"><b id="repVend">R$ 0</b>Vendas</div>
+<div class="card stat"><b id="repDesp">R$ 0</b>Despesas</div><div class="card stat"><b id="repLucro">R$ 0</b>Saldo</div>
+</div>
+<div class="card"><h3>🐑 Distribuição do rebanho</h3><div id="repDistrib"></div></div>
+<div class="card"><h3>📈 Pesos</h3><div id="repPesos"></div></div>
+</section>
+
+<section id="ficha" class="page"><h2>📋 Ficha do animal</h2><div id="fichaBody"></div></section>
+
+
+<section id="ranking" class="page">
+<h2>🏆 Ranking das matrizes</h2>
+<div class="card"><p class="small">Desempenho das ovelhas pelos cordeiros registrados e desmamados.</p><div id="rankingList"></div></div>
+</section>
+
+<section id="carneiros" class="page">
+<h2>🐏 Controle dos carneiros</h2>
+<div class="card"><div id="carneiroList"></div></div>
+</section>
+
+<section id="metas" class="page">
+<h2>🎯 Metas</h2>
+<div class="card">
+<label>Meta de cordeiros nascidos no ano</label><input id="metaNasc" type="number" min="0">
+<label>Meta de cordeiros desmamados no ano</label><input id="metaDesm" type="number" min="0">
+<label>Meta de vendas no ano (R$)</label><input id="metaVenda" type="number" min="0" step=".01">
+<button onclick="saveMetas()">💾 Salvar metas</button>
+</div>
+<div id="metasList" class="card"></div>
+</section>
+
+<section id="custos" class="page">
+<h2>💵 Custo por cordeiro</h2>
+<div class="card"><p class="small">Registre os custos de um cordeiro para acompanhar o custo e o resultado da venda.</p>
+<div class="formgrid">
+<div><label>Cordeiro</label><select id="cuAnimal"></select></div>
+<div><label>Ração (R$)</label><input id="cuRacao" type="number" step=".01"></div>
+<div><label>Medicamentos (R$)</label><input id="cuMed" type="number" step=".01"></div>
+<div><label>Vacinas (R$)</label><input id="cuVac" type="number" step=".01"></div>
+<div><label>Outros (R$)</label><input id="cuOut" type="number" step=".01"></div>
+<div><label>Valor de venda (R$)</label><input id="cuVenda" type="number" step=".01"></div>
+</div>
+<button onclick="saveCusto()">Salvar custo</button></div>
+<div id="custosList"></div>
+</section>
+
 <section id="config" class="page"><h2>⚙️ Configurações</h2><div class="card"><label>Nome da propriedade</label><input id="cfgNome"><label>Limite de vermifugações para retirar do lote</label><input id="cfgVerm" type="number" min="1" value="3"><div class="small">Ex.: 3 = na 3ª vermifugação registrada, o animal entra nos alertas de retirada.</div><label>Aparência</label><select id="cfgTema"><option value="claro">Claro</option><option value="escuro">Escuro</option></select><div class="actions"><button onclick="saveConfig()">Salvar</button><button class="secondary" onclick="backup()">💾 Backup</button><button class="secondary" onclick="document.getElementById('restore').click()">↩️ Restaurar</button><input id="restore" type="file" accept=".json" style="display:none" onchange="restoreDb(this)"></div></div></section>
 
 </main>
 <nav id="nav">
 <button class="active" onclick="show('home',this)">🏠<br>Início</button>
 <button onclick="show('femeas',this)">🐑<br>Ovelhas</button>
+<button onclick="show('cordeiros',this)">🐣<br>Cordeiros</button>
 <button onclick="show('machos',this)">🐏<br>Carneiros</button>
 <button onclick="show('repro',this)">❤️<br>Reprodução</button>
 <button onclick="show('saude',this)">💉<br>Saúde</button>
@@ -123,6 +252,13 @@ body.dark{--g:#c58a55;--gl:#3a2b20;--bg:#11120f;--card:#1b1d19;--t:#f2eee8;--m:#
 <button onclick="show('retirar',this)">🚨<br>Retirar</button>
 <button onclick="show('abate',this)">🥩<br>Abate</button>
 <button onclick="show('financeiro',this)">💰<br>Financeiro</button>
+<button onclick="show('pesagens',this)">⚖️<br>Pesagens</button>
+<button onclick="show('racao',this)">🌾<br>Ração</button>
+<button onclick="show('relatorios',this)">📊<br>Relatórios</button>
+<button onclick="show('ranking',this)">🏆<br>Ranking</button>
+<button onclick="show('carneiros',this)">🐏<br>Carneiros</button>
+<button onclick="show('metas',this)">🎯<br>Metas</button>
+<button onclick="show('custos',this)">💵<br>Custos</button>
 <button onclick="show('config',this)">⚙️<br>Config.</button>
 </nav>
 
@@ -140,6 +276,130 @@ function activeAnimals(s){return db.animais.filter(a=>a.sexo===s&&a.status!=='Ve
 function nameAnimal(id){let a=db.animais.find(x=>String(x.id)===String(id));return a?(a.num||'')+' - '+(a.name||''):'Animal não encontrado'}
 function opts(id,sexFilter){let arr=db.animais.filter(a=>!sexFilter||a.sexo===sexFilter);$(id).innerHTML=arr.map(a=>`<option value="${a.id}">${esc(a.num)} - ${esc(a.name)}</option>`).join('')||'<option value="">Cadastre um animal primeiro</option>'}
 function fillParents(){opts('aPai','m');opts('aMae','f')}
+
+function isCordeiro(a){
+  return !!a.isCordeiro || String(a.name||'').startsWith('Cordeiro');
+}
+function cordeiros(){
+  return db.animais.filter(isCordeiro);
+}
+function novoCordeiro(){
+  aid=null;
+  $('lambTitle').textContent='Novo cordeiro';
+  ['lNum','lName','lRace','lBirth','lPesoNasc','lPeso','lDesm','lPesoDesm','lObs2'].forEach(x=>$(x).value='');
+  $('lSex').value='f';
+  $('lStatus').value='Mamando';
+  opts('lPai','m'); opts('lMae','f');
+  $('lPai').value=''; $('lMae').value='';
+  $('lBirth').value=today();
+  show('cordeiroForm');
+}
+function editCordeiro(id){
+  let a=db.animais.find(x=>x.id===id); if(!a)return;
+  aid=id;
+  $('lambTitle').textContent='Editar cordeiro';
+  $('lNum').value=a.num||'';
+  $('lName').value=a.name||'';
+  $('lSex').value=a.sexo||'f';
+  $('lRace').value=a.race||'';
+  $('lBirth').value=a.birth||'';
+  $('lPesoNasc').value=a.pesoNascimento||'';
+  $('lPeso').value=a.peso||'';
+  $('lDesm').value=a.dataDesmame||'';
+  $('lPesoDesm').value=a.pesoDesmame||'';
+  $('lStatus').value=a.cordeiroStatus||'Mamando';
+  $('lObs2').value=a.obs||'';
+  opts('lPai','m'); opts('lMae','f');
+  $('lPai').value=a.pai||''; $('lMae').value=a.mae||'';
+  show('cordeiroForm');
+}
+function saveCordeiro(){
+  let num=$('lNum').value.trim();
+  if(!num)return alert('Informe o brinco/número do cordeiro.');
+  let x={
+    id:aid||Date.now(),
+    num,
+    name:$('lName').value.trim()||('Cordeiro '+num),
+    sexo:$('lSex').value,
+    race:$('lRace').value,
+    birth:$('lBirth').value||today(),
+    pai:$('lPai').value,
+    mae:$('lMae').value,
+    peso:+$('lPeso').value||0,
+    pesoNascimento:+$('lPesoNasc').value||0,
+    dataNascimentoPeso:$('lBirth').value||today(),
+    pesoDesmame:+$('lPesoDesm').value||0,
+    dataDesmame:$('lDesm').value||'',
+    pesoVenda:0,
+    dataVenda:'',
+    valorVenda:0,
+    destino:'Venda',
+    status:'Ativo',
+    cordeiroStatus:$('lStatus').value,
+    isCordeiro:true,
+    motivo:'',
+    obs:$('lObs2').value
+  };
+  if(aid){
+    let i=db.animais.findIndex(a=>a.id===aid);
+    db.animais[i]={...db.animais[i],...x};
+  }else db.animais.push(x);
+  save(); show('cordeiros');
+}
+function mudarDestinoCordeiro(id,status){
+  let a=db.animais.find(x=>x.id===id); if(!a)return;
+  if(status!=='Mamando' && status!=='Desmamado' && !a.dataDesmame){
+    a.dataDesmame=today();
+  }
+  a.cordeiroStatus=status;
+  if(status==='Abate') a.destino='Abate';
+  if(status==='Reprodução') a.destino='Reprodução';
+  if(status==='Engorda' || status==='Criadeira') a.destino=status;
+  save(); render();
+}
+function desmamarCordeiro(id){
+  let a=db.animais.find(x=>x.id===id); if(!a)return;
+  let peso=prompt('Informe o peso no desmame (kg):', a.pesoDesmame||'');
+  if(peso===null)return;
+  a.pesoDesmame=+peso||0;
+  a.peso=a.pesoDesmame||a.peso||0;
+  a.dataDesmame=today();
+  a.cordeiroStatus='Desmamado';
+  save(); render();
+}
+function delCordeiro(id){
+  if(confirm('Excluir este cordeiro?')){
+    db.animais=db.animais.filter(a=>a.id!==id);
+    save(); render();
+  }
+}
+function renderCordeiros(){
+  let arr=cordeiros();
+  let count=s=>arr.filter(a=>(a.cordeiroStatus||'Mamando')===s).length;
+  $('lambMamando').textContent=count('Mamando');
+  $('lambDesmamados').textContent=count('Desmamado');
+  $('lambEngorda').textContent=count('Engorda');
+  $('lambCriadeira').textContent=count('Criadeira');
+  $('lambList').innerHTML=arr.length?[...arr].reverse().map(a=>{
+    let st=a.cordeiroStatus||'Mamando';
+    return `<div class="card">
+      <div class="row">
+        <div><b>🐑 ${esc(a.num)} — ${esc(a.name)}</b><div class="small">${a.sexo==='f'?'Fêmea':'Macho'} • ${esc(a.race||'')}</div></div>
+        <span class="lamb-status">${esc(st)}</span>
+      </div>
+      <div class="small">Nascimento: ${esc(a.birth||'-')} • Peso nasc.: ${a.pesoNascimento||0} kg • Peso atual: ${a.peso||0} kg • Desmame: ${a.dataDesmame||'-'} • Peso desmame: ${a.pesoDesmame||0} kg</div>
+      ${a.mae?'<div class="small">Mãe: '+esc(nameAnimal(a.mae))+'</div>':''}
+      ${a.pai?'<div class="small">Pai: '+esc(nameAnimal(a.pai))+'</div>':''}
+      <div class="actions lamb-actions">
+        ${st==='Mamando'?`<button onclick="desmamarCordeiro(${a.id})">🍼 Desmamar</button>`:''}
+        ${st==='Desmamado'?`<button onclick="mudarDestinoCordeiro(${a.id},'Engorda')">🌾 Engorda</button><button onclick="mudarDestinoCordeiro(${a.id},'Criadeira')">🐑 Criadeira</button><button onclick="mudarDestinoCordeiro(${a.id},'Abate')">🥩 Abate</button><button onclick="mudarDestinoCordeiro(${a.id},'Reprodução')">❤️ Reprodução</button>`:''}
+        <button class="secondary" onclick="editCordeiro(${a.id})">✏️ Editar</button>
+        <button class="danger" onclick="delCordeiro(${a.id})">🗑️ Excluir</button>
+      </div>
+    </div>`;
+  }).join(''):'<div class="empty">Nenhum cordeiro cadastrado.</div>';
+}
+
 function novoAnimal(s){aid=null;sex=s;$('animalTitle').textContent=s==='f'?'Nova ovelha':'Novo carneiro';['aNum','aName','aRace','aBirth','aPeso','pNasc','dNasc','pDesm','dDesm','pVenda','dVenda','vVenda','aObs'].forEach(x=>$(x).value='');$('aSex').value=s;$('aStatus').value='Ativo';$('motivo').value='';fillParents();$('aPai').value='';$('aMae').value='';updatePeso();show('animal')}
 function editAnimal(id){let a=db.animais.find(x=>x.id===id);if(!a)return;aid=id;sex=a.sexo;$('animalTitle').textContent='Editar animal';$('aNum').value=a.num||'';$('aName').value=a.name||'';$('aRace').value=a.race||'';$('aBirth').value=a.birth||'';$('aSex').value=a.sexo;$('aPeso').value=a.peso||'';$('aStatus').value=a.status||'Ativo';$('motivo').value=a.motivo||'';$('aObs').value=a.obs||'';$('pNasc').value=a.pesoNascimento||'';$('dNasc').value=a.dataNascimentoPeso||a.birth||'';$('pDesm').value=a.pesoDesmame||'';$('dDesm').value=a.dataDesmame||'';$('pVenda').value=a.pesoVenda||'';$('dVenda').value=a.dataVenda||'';$('vVenda').value=a.valorVenda||'';$('destino').value=a.destino||'Venda';fillParents();$('aPai').value=a.pai||'';$('aMae').value=a.mae||'';updatePeso();show('animal')}
 function saveAnimal(){if(!$('aNum').value.trim())return alert('Informe o brinco/número.');let x={id:aid||Date.now(),num:$('aNum').value.trim(),name:$('aName').value.trim()||('Animal '+$('aNum').value.trim()),sexo:$('aSex').value,race:$('aRace').value,birth:$('aBirth').value,pai:$('aPai').value,mae:$('aMae').value,peso:+$('aPeso').value||0,status:$('aStatus').value,motivo:$('motivo').value,obs:$('aObs').value,pesoNascimento:+$('pNasc').value||0,dataNascimentoPeso:$('dNasc').value,pesoDesmame:+$('pDesm').value||0,dataDesmame:$('dDesm').value,pesoVenda:+$('pVenda').value||0,dataVenda:$('dVenda').value,valorVenda:+$('vVenda').value||0,destino:$('destino').value};if(aid){let i=db.animais.findIndex(a=>a.id===aid);db.animais[i]={...db.animais[i],...x}}else db.animais.push(x);save();show(x.sexo==='f'?'femeas':'machos')}
@@ -151,7 +411,7 @@ function novoCobertura(){opts('rOvelha','f');opts('rCarneiro','m');$('rData').va
 function saveCobertura(){if(!$('rOvelha').value||!$('rCarneiro').value)return alert('Escolha a ovelha e o carneiro.');db.repro.push({id:Date.now(),ovelha:$('rOvelha').value,carneiro:$('rCarneiro').value,data:$('rData').value||today(),prev:$('rPrev').value,obs:$('rObs').value});save();show('repro')}
 function delCobertura(id){if(confirm('Excluir cobertura?')){db.repro=db.repro.filter(x=>x.id!==id);save();render()}}
 function novoParto(){opts('bOvelha','f');$('bData').value=today();['bNasc','bVivos','bMortos','bSexo','bBrincos'].forEach(x=>$(x).value='');show('parto')}
-function saveParto(){let x={id:Date.now(),ovelha:$('bOvelha').value,data:$('bData').value||today(),nasc:+$('bNasc').value||0,vivos:+$('bVivos').value||0,mortos:+$('bMortos').value||0,sexo:$('bSexo').value,brincos:($('bBrincos').value||'').split(/[\n,;]+/).map(x=>x.trim()).filter(Boolean)};if(!x.ovelha)return alert('Escolha a ovelha.');db.partos.push(x);let pai='';let cov=[...db.repro].reverse().find(r=>String(r.ovelha)===String(x.ovelha));if(cov)pai=cov.carneiro;(x.brincos||[]).forEach((br,i)=>{if(!db.animais.some(a=>String(a.num).toLowerCase()===String(br).toLowerCase()))db.animais.push({id:Date.now()+i,num:br,name:'Cordeiro '+br,sexo:'f',race:'',birth:x.data,pai:pai,mae:x.ovelha,peso:0,status:'Ativo',pesoNascimento:0,dataNascimentoPeso:x.data,pesoDesmame:0,dataDesmame:'',pesoVenda:0,dataVenda:'',valorVenda:0,destino:'Venda',obs:'Cordeiro cadastrado no parto'})});save();show('repro')}
+function saveParto(){let x={id:Date.now(),ovelha:$('bOvelha').value,data:$('bData').value||today(),nasc:+$('bNasc').value||0,vivos:+$('bVivos').value||0,mortos:+$('bMortos').value||0,sexo:$('bSexo').value,brincos:($('bBrincos').value||'').split(/[\n,;]+/).map(x=>x.trim()).filter(Boolean)};if(!x.ovelha)return alert('Escolha a ovelha.');db.partos.push(x);let pai='';let cov=[...db.repro].reverse().find(r=>String(r.ovelha)===String(x.ovelha));if(cov)pai=cov.carneiro;(x.brincos||[]).forEach((br,i)=>{if(!db.animais.some(a=>String(a.num).toLowerCase()===String(br).toLowerCase()))db.animais.push({id:Date.now()+i,num:br,name:'Cordeiro '+br,sexo:'f',race:'',birth:x.data,pai:pai,mae:x.ovelha,peso:0,status:'Ativo',pesoNascimento:0,dataNascimentoPeso:x.data,pesoDesmame:0,dataDesmame:'',pesoVenda:0,dataVenda:'',valorVenda:0,destino:'Venda',obs:'Cordeiro cadastrado no parto',isCordeiro:true,cordeiroStatus:'Mamando'})});save();show('repro')}
 function novoSaude(){opts('hAnimal');$('hData').value=today();$('hTipo').value='Vacina';['hProd','hDose','hObs'].forEach(x=>$(x).value='');show('saude')}
 function saveSaude(){let animal=$('hAnimal').value;if(!animal)return alert('Escolha o animal.');db.saude.push({id:Date.now(),animal,tipo:$('hTipo').value,data:$('hData').value||today(),prod:$('hProd').value,dose:$('hDose').value,obs:$('hObs').value});syncVermifugacao(animal);save();show('saude')}
 function syncVermifugacao(animal){let n=db.saude.filter(x=>String(x.animal)===String(animal)&&x.tipo==='Vermifugação').length;if(n>=db.config.limiteVermifugos){let a=db.animais.find(x=>String(x.id)===String(animal));if(a&&a.status==='Ativo'){a.status='Retirar do lote';a.motivo='Excesso de vermifugação'}}}
@@ -175,7 +435,7 @@ function saveConfig(){db.config.nome=$('cfgNome').value;db.config.limiteVermifug
 function setTema(v){document.body.classList.toggle('dark',v==='escuro');db.config.tema=v;save()}
 function backup(){let b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='backup-ovinocontrol.json';a.click()}
 function restoreDb(inp){let f=inp.files[0],r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();location.reload()}catch(e){alert('Backup inválido')}};r.readAsText(f)}
-function renderAnimals(){for(const s of ['f','m']){let id=s==='f'?'fList':'mList',arr=db.animais.filter(a=>a.sexo===s);$(id).innerHTML=arr.length?[...arr].reverse().map(a=>`<div class="card"><div class="row"><div><b>${esc(a.num)} — ${esc(a.name)}</b><div class="small">${esc(a.race||'')} • ${a.status||'Ativo'}</div></div><span>${a.status==='Retirar do lote'?'🚨':'🐑'}</span></div><div class="small">Peso: ${a.peso||0} kg • Nasc.: ${a.pesoNascimento||0} kg • Desm.: ${a.pesoDesmame||0} kg • Venda/abate: ${a.pesoVenda||0} kg</div>${a.pai?'<div class="small">Pai: '+esc(nameAnimal(a.pai))+'</div>':''}${a.mae?'<div class="small">Mãe: '+esc(nameAnimal(a.mae))+'</div>':''}<div class="actions"><button class="secondary" onclick="editAnimal(${a.id})">✏️ Editar</button><button class="danger" onclick="delAnimal(${a.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum animal cadastrado.</div>'}}
+function renderAnimals(){for(const s of ['f','m']){let id=s==='f'?'fList':'mList',arr=db.animais.filter(a=>a.sexo===s);$(id).innerHTML=arr.length?[...arr].reverse().map(a=>`<div class="card"><div class="row"><div><b>${esc(a.num)} — ${esc(a.name)}</b><div class="small">${esc(a.race||'')} • ${a.status||'Ativo'}</div></div><span>${a.status==='Retirar do lote'?'🚨':'🐑'}</span></div><div class="small">Peso: ${a.peso||0} kg • Nasc.: ${a.pesoNascimento||0} kg • Desm.: ${a.pesoDesmame||0} kg • Venda/abate: ${a.pesoVenda||0} kg</div>${a.pai?'<div class="small">Pai: '+esc(nameAnimal(a.pai))+'</div>':''}${a.mae?'<div class="small">Mãe: '+esc(nameAnimal(a.mae))+'</div>':''}<div class="actions"><button class="secondary" onclick="abrirFicha(${a.id})">📋 Ficha</button><button class="secondary" onclick="editAnimal(${a.id})">✏️ Editar</button><button class="danger" onclick="delAnimal(${a.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum animal cadastrado.</div>'}}
 function updateOldHomeStats(){
   let f=activeAnimals('f').length,m=activeAnimals('m').length;
   let pren=db.repro.filter(x=>x.prev&&x.prev>=today()).length;
@@ -195,7 +455,62 @@ function updateOldHomeStats(){
   $('alertsHome').innerHTML=db.animais.filter(x=>x.status==='Retirar do lote').length
     ? `<div class="notice">🔔 <b>Você tem ${db.animais.filter(x=>x.status==='Retirar do lote').length} alerta(s)</b><br>Há animais para retirar do lote.</div>`:'';
 }
-function render(){renderAnimals();opts('hAnimal');opts('faAnimal');opts('rOvelha','f');opts('rCarneiro','m');opts('bOvelha','f');
+
+let aid=null;
+function novaPesagem(){opts('peAnimal');peData.value=today();pePeso.value='';peObs.value='';show('pesagemForm')}
+function savePesagem(){if(!peAnimal.value||!pePeso.value)return alert('Escolha o animal e informe o peso.');db.pesagens.push({id:Date.now(),animal:peAnimal.value,data:peData.value,peso:+pePeso.value,obs:peObs.value});let a=db.animais.find(x=>String(x.id)===String(peAnimal.value));if(a)a.peso=+pePeso.value;save();show('pesagens')}
+function novaRacao(){raData.value=today();raTipo.value='Entrada';raProd.value='';raQtd.value='';raValor.value='';raForn.value='';show('racaoForm')}
+function saveRacao(){if(!raQtd.value)return alert('Informe a quantidade.');db.racao.push({id:Date.now(),tipo:raTipo.value,data:raData.value,produto:raProd.value,qtd:+raQtd.value,valor:+raValor.value||0,fornecedor:raForn.value});save();show('racao')}
+function abrirFicha(id){let a=db.animais.find(x=>x.id===id);if(!a)return;let pes=db.pesagens.filter(x=>String(x.animal)===String(id)).sort((x,y)=>x.data.localeCompare(y.data)),sa=db.saude.filter(x=>String(x.animal)===String(id)),fa=db.famacha.filter(x=>String(x.animal)===String(id));$('fichaBody').innerHTML=`<div class="card"><h2>🐑 ${esc(a.num)} — ${esc(a.name)}</h2><div class="grid"><div><b>Sexo:</b> ${a.sexo==='f'?'Fêmea':'Macho'}</div><div><b>Raça:</b> ${esc(a.race||'-')}</div><div><b>Nascimento:</b> ${esc(a.birth||'-')}</div><div><b>Peso:</b> ${a.peso||0} kg</div><div><b>Pai:</b> ${esc(nameAnimal(a.pai))}</div><div><b>Mãe:</b> ${esc(nameAnimal(a.mae))}</div></div></div>
+<div class="card"><h3>⚖️ Histórico de peso</h3>${pes.length?pes.map(x=>`<div class="item">${x.data} — <b>${x.peso} kg</b></div>`).join(''):'Nenhuma pesagem.'}</div>
+<div class="card"><h3>💉 Saúde</h3>${sa.length?sa.map(x=>`<div class="item">${x.data} — ${esc(x.tipo)} — ${esc(x.prod||'')}</div>`).join(''):'Nenhum registro.'}</div>
+<div class="card"><h3>👁️ FAMACHA</h3>${fa.length?fa.map(x=>`<div class="item">${x.data} — escore <b>${x.score}</b></div>`).join(''):'Nenhuma avaliação.'}</div>
+<div class="actions"><button class="secondary" onclick="show(a.sexo==='f'?'femeas':'machos')">Voltar</button><button onclick="editAnimal(${a.id})">✏️ Editar</button></div>`;show('ficha')}
+function renderExtra(){
+ let ps=db.pesagens, avg=ps.length?ps.reduce((s,x)=>s+x.peso,0)/ps.length:0;
+ pesoMedia.textContent=avg.toFixed(1)+' kg';
+ let gains=ps.map((x,i)=>i?x.peso-ps[i-1].peso:0),gm=gains.length?gains.reduce((s,x)=>s+x,0)/gains.length:0;ganhoMedio.textContent=gm.toFixed(1)+' kg';
+ pesoList.innerHTML=ps.length?[...ps].reverse().map(x=>`<div class="card"><div class="row"><b>⚖️ ${esc(nameAnimal(x.animal))}</b><b>${x.peso} kg</b></div><div class="small">${x.data}</div><div class="actions"><button class="secondary" onclick="abrirFicha(${x.animal})">📋 Ficha</button></div></div>`).join(''):'<div class="empty">Nenhuma pesagem.</div>';
+ let re=db.racao.filter(x=>x.tipo==='Entrada').reduce((s,x)=>s+x.qtd,0),rs=db.racao.filter(x=>x.tipo==='Saída').reduce((s,x)=>s+x.qtd,0),rv=db.racao.reduce((s,x)=>s+(x.valor||0),0);
+ racaoSaldo.textContent=(re-rs).toFixed(1)+' kg';racaoCusto.textContent=money(rv);
+ racaoList.innerHTML=db.racao.length?[...db.racao].reverse().map(x=>`<div class="item"><b>${x.tipo==='Entrada'?'➕':'➖'} ${esc(x.produto)}</b> — ${x.qtd} kg <span class="small">${x.data} • ${money(x.valor)}</span></div>`).join(''):'<div class="empty">Nenhuma movimentação.</div>';
+ repNasc.textContent=db.partos.reduce((s,x)=>s+(x.vivos||x.nasc||0),0);repDesm.textContent=db.animais.filter(x=>x.isCordeiro&&x.dataDesmame).length;repMort.textContent=db.animais.filter(x=>x.status==='Morto'||x.status==='Mort0').length;repVend.textContent=money(db.financeiro.filter(x=>x.tipo==='Entrada').reduce((s,x)=>s+(+x.valor||0),0));repDesp.textContent=money(db.financeiro.filter(x=>x.tipo==='Saída').reduce((s,x)=>s+(+x.valor||0),0));repLucro.textContent=money((+repVend.textContent.replace(/[^\d,-]/g,'').replace(',','.')||0)-(+repDesp.textContent.replace(/[^\d,-]/g,'').replace(',','.')||0));
+ let cats={Ovelhas:db.animais.filter(x=>x.sexo==='f'&&!x.isCordeiro).length,Carneiros:db.animais.filter(x=>x.sexo==='m'&&!x.isCordeiro).length,Cordeiros:db.animais.filter(x=>x.isCordeiro).length,Engorda:db.animais.filter(x=>x.isCordeiro&&x.cordeiroStatus==='Engorda').length,Criadeira:db.animais.filter(x=>x.isCordeiro&&x.cordeiroStatus==='Criadeira').length};repDistrib.innerHTML=Object.entries(cats).map(([k,v])=>`<div>${k}: <b>${v}</b><div class="chartbar"><i style="width:${Math.min(100,v*10)}%"></i></div></div>`).join('');
+ repPesos.innerHTML=ps.length?ps.slice(-10).map(x=>`<div class="item">${x.data} — ${esc(nameAnimal(x.animal))}: <b>${x.peso} kg</b></div>`).join(''):'Nenhuma pesagem.';
+}
+
+
+function saveMetas(){
+  db.metas={nasc:+metaNasc.value||0,desm:+metaDesm.value||0,venda:+metaVenda.value||0};
+  save(); render();
+}
+function saveCusto(){
+  if(!cuAnimal.value)return alert('Escolha o cordeiro.');
+  db.custos.push({id:Date.now(),animal:cuAnimal.value,racao:+cuRacao.value||0,med:+cuMed.value||0,vac:+cuVac.value||0,out:+cuOut.value||0,venda:+cuVenda.value||0});
+  save(); render();
+}
+function renderExtrasNovos(){
+  let cs=cordeiros();
+  opts('cuAnimal');
+  if(db.metas){
+    metaNasc.value=db.metas.nasc||0; metaDesm.value=db.metas.desm||0; metaVenda.value=db.metas.venda||0;
+  }
+  let born=db.partos.reduce((s,x)=>s+(+x.vivos||+x.nasc||0),0);
+  let desm=cs.filter(x=>x.dataDesmame).length;
+  let vend=db.financeiro.filter(x=>x.tipo==='Entrada').reduce((s,x)=>s+(+x.valor||0),0);
+  let metas=db.metas||{nasc:0,desm:0,venda:0};
+  metasList.innerHTML=`<div class="rankbox">Cordeiros nascidos: <b>${born}</b> / ${metas.nasc||0}<div class="progress"><i style="width:${metas.nasc?Math.min(100,born/metas.nasc*100):0}%"></i></div></div>
+  <div class="rankbox">Cordeiros desmamados: <b>${desm}</b> / ${metas.desm||0}<div class="progress"><i style="width:${metas.desm?Math.min(100,desm/metas.desm*100):0}%"></i></div></div>
+  <div class="rankbox">Vendas: <b>${money(vend)}</b> / ${money(metas.venda||0)}<div class="progress"><i style="width:${metas.venda?Math.min(100,vend/metas.venda*100):0}%"></i></div></div>`;
+  let females=db.animais.filter(a=>a.sexo==='f'&&!a.isCordeiro);
+  let ranks=females.map(a=>{let filhos=cs.filter(c=>String(c.mae)===String(a.id));return {a,filhos,desm:filhos.filter(c=>c.dataDesmame).length}}).sort((x,y)=>y.desm-x.desm||y.filhos.length-x.filhos.length);
+  rankingList.innerHTML=ranks.length?ranks.map((r,i)=>`<div class="rankbox"><b>${i+1}º ${esc(r.a.num)} — ${esc(r.a.name)}</b><div class="small">${r.filhos.length} cordeiro(s) registrado(s) • ${r.desm} desmamado(s)</div></div>`).join(''):'<div class="empty">Cadastre ovelhas e cordeiros para gerar o ranking.</div>';
+  let males=db.animais.filter(a=>a.sexo==='m'&&!a.isCordeiro);
+  carneiroList.innerHTML=males.length?males.map(a=>{let cov=db.repro.filter(x=>String(x.carneiro)===String(a.id));let filhos=cs.filter(c=>String(c.pai)===String(a.id));return `<div class="rankbox"><b>🐏 ${esc(a.num)} — ${esc(a.name)}</b><div class="small">${cov.length} cobertura(s) • ${filhos.length} cordeiro(s) registrado(s)</div></div>`}).join(''):'<div class="empty">Nenhum carneiro cadastrado.</div>';
+  custosList.innerHTML=db.custos.length?[...db.custos].reverse().map(x=>{let total=x.racao+x.med+x.vac+x.out, lucro=x.venda-total;return `<div class="card"><b>🐑 ${esc(nameAnimal(x.animal))}</b><div class="small">Custo: ${money(total)} • Venda: ${money(x.venda)} • <b>Resultado: ${money(lucro)}</b></div></div>`}).join(''):'<div class="empty">Nenhum custo registrado.</div>';
+}
+
+function render(){renderCordeiros();renderAnimals();renderExtra();renderExtrasNovos();opts('hAnimal');opts('faAnimal');opts('rOvelha','f');opts('rCarneiro','m');opts('bOvelha','f');
 let f=activeAnimals('f').length,m=activeAnimals('m').length,c=db.animais.filter(a=>a.name?.startsWith('Cordeiro')&&a.status==='Ativo').length,ret=db.animais.filter(a=>a.status==='Retirar do lote').length;
 $('stF').textContent=f;$('stM').textContent=m;$('stC').textContent=c;$('stRet').textContent=ret;
 let inv=db.lotes.reduce((s,x)=>s+x.compra,0),luc=db.lotes.reduce((s,x)=>s+x.lucro,0);$('stInv').textContent=money(inv);$('stLuc').textContent=money(luc);
@@ -213,7 +528,10 @@ $('homeEvents').innerHTML=db.repro.filter(x=>x.prev).slice(-5).map(x=>`❤️ Pa
 updateOldHomeStats();
 $('cfgNome').value=db.config.nome||'';$('cfgVerm').value=db.config.limiteVermifugos||3;$('cfgTema').value=db.config.tema||'claro';
 }
-(function(){if(db.config.tema==='escuro')document.body.classList.add('dark');['hData','faData','rData','bData','lData'].forEach(id=>$(id).value=today());render()})();
+(function(){
+if($('animalPhoto'))$('animalPhoto').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{$('animalPhoto').dataset.src=r.result;$('animalPhotoPreview').src=r.result;$('animalPhotoPreview').style.display='block'};r.readAsDataURL(f)});
+
+if(db.config.tema==='escuro')document.body.classList.add('dark');['hData','faData','rData','bData','lData'].forEach(id=>$(id).value=today());render()})();
 </script>
 </body>
 </html>
