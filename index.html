@@ -26,8 +26,11 @@ label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}input,select
 
 .lamb-actions button{min-width:110px}
 
-nav{position:fixed;left:0;right:0;bottom:0;height:calc(86px + env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--l);display:flex;align-items:flex-start;overflow-x:auto;overflow-y:hidden;z-index:99999;padding:0 4px env(safe-area-inset-bottom);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x}
-nav::-webkit-scrollbar{display:none}nav button{appearance:none;-webkit-appearance:none;background:transparent;color:var(--m);border:0;border-radius:0;min-width:86px;width:86px;height:82px;flex:0 0 86px;padding:8px 3px 4px;font-size:12px;line-height:22px;font-weight:700;cursor:pointer;pointer-events:auto;touch-action:pan-x;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:rgba(139,90,43,.18);position:relative;z-index:100000}nav button:active{background:var(--gl)}nav button.active{color:var(--g)}
+nav{position:sticky;top:0;left:auto;right:auto;bottom:auto;height:auto;min-height:76px;background:var(--card);border-top:1px solid var(--l);border-bottom:1px solid var(--l);display:flex;align-items:stretch;overflow-x:auto;overflow-y:hidden;z-index:9999;padding:6px 4px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x;gap:5px}
+nav::-webkit-scrollbar{display:none}
+nav button{appearance:none;-webkit-appearance:none;background:transparent;color:var(--m);border:0;border-radius:10px;min-width:92px;width:92px;height:64px;flex:0 0 92px;padding:7px 4px;font-size:12px;line-height:20px;font-weight:700;cursor:pointer;pointer-events:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:rgba(139,90,43,.18);position:relative;z-index:10000}
+nav button:active,nav button:focus{background:var(--gl);outline:none}
+nav button.active{color:var(--g);background:var(--gl)}
 .famacha-table{width:100%;border-collapse:separate;border-spacing:0 7px}.famacha-table td{padding:9px;background:var(--bg)}.famacha-table td:first-child{border-radius:9px 0 0 9px;width:55px;text-align:center}.famacha-table td:last-child{border-radius:0 9px 9px 0}
 .fa-color{display:inline-block;width:32px;height:32px;border-radius:7px;border:1px solid #777;vertical-align:middle}.fa1{background:#8b0000}.fa2{background:#c62828}.fa3{background:#e5a100}.fa4{background:#f1c40f}.fa5{background:#f5f5f5}
 .sanwrap{overflow-x:auto}.san{min-width:850px;width:100%;border-collapse:separate;border-spacing:0 5px}.san th,.san td{padding:6px;text-align:center}.san th:first-child,.san td:first-child{text-align:left;min-width:230px}.san td{background:var(--bg)}.san td:first-child{border-radius:8px 0 0 8px}.san td:last-child{border-radius:0 8px 8px 0}.month{width:40px;height:34px;padding:0;background:var(--card);color:var(--t);border:1px solid var(--l)}.month.on{background:var(--g);color:#fff}
@@ -37,6 +40,7 @@ body.dark{--g:#c58a55;--gl:#3a2b20;--bg:#11120f;--card:#1b1d19;--t:#f2eee8;--m:#
 </head>
 <body>
 <header>🐑 OvinoControl</header>
+<div id="navHint" style="text-align:center;font-size:12px;color:var(--m);padding:5px;background:#fff">👆 Deslize as abas para os lados e toque na que quiser</div>
 <main>
 
 <section id="home" class="page active">
@@ -271,7 +275,15 @@ let aid=null,sex='f',sanMonths=[];
 const $=id=>document.getElementById(id),today=()=>new Date().toISOString().slice(0,10),save=()=>localStorage.setItem(KEY,JSON.stringify(db));
 const money=v=>(Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function show(id,b){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');render();scrollTo(0,0)}
+function show(id,b){
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+var target=$(id); if(!target)return;
+target.classList.add('active');
+document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('active'));
+if(b)b.classList.add('active');
+render();
+window.scrollTo(0,0);
+}
 function activeAnimals(s){return db.animais.filter(a=>a.sexo===s&&a.status!=='Vendido'&&a.status!=='Mort0')}
 function nameAnimal(id){let a=db.animais.find(x=>String(x.id)===String(id));return a?(a.num||'')+' - '+(a.name||''):'Animal não encontrado'}
 function opts(id,sexFilter){let arr=db.animais.filter(a=>!sexFilter||a.sexo===sexFilter);$(id).innerHTML=arr.map(a=>`<option value="${a.id}">${esc(a.num)} - ${esc(a.name)}</option>`).join('')||'<option value="">Cadastre um animal primeiro</option>'}
