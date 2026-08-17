@@ -248,6 +248,256 @@ body.dark{--g:#c58a55;--gl:#3a2b20;--bg:#11120f;--card:#1b1d19;--t:#f2eee8;--m:#
 <section id="config" class="page"><h2>⚙️ Configurações</h2><div class="card"><label>Nome da propriedade</label><input id="cfgNome"><label>Limite de vermifugações para retirar do lote</label><input id="cfgVerm" type="number" min="1" value="3"><div class="small">Ex.: 3 = na 3ª vermifugação registrada, o animal entra nos alertas de retirada.</div><label>Aparência</label><select id="cfgTema"><option value="claro">Claro</option><option value="escuro">Escuro</option></select><div class="actions"><button onclick="saveConfig()">Salvar</button><button class="secondary" onclick="backup()">💾 Backup</button><button class="secondary" onclick="document.getElementById('restore').click()">↩️ Restaurar</button><input id="restore" type="file" accept=".json" style="display:none" onchange="restoreDb(this)"></div></div></section>
 
 </main>
+<nav id="nav" aria-label="Navegação principal" style="display:none"></nav>
+<div id="quickNav" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--l);position:sticky;top:0;z-index:10000">
+<a href="#home" class="qnav">🏠 Início</a>
+<a href="#femeas" class="qnav">🐑 Ovelhas</a>
+<a href="#cordeiros" class="qnav">🐣 Cordeiros</a>
+<a href="#machos" class="qnav">🐏 Carneiros</a>
+<a href="#repro" class="qnav">❤️ Reprodução</a>
+<a href="#saude" class="qnav">💉 Saúde</a>
+<a href="#famacha" class="qnav">👁️ FAMACHA</a>
+<a href="#sanitario" class="qnav">📅 Sanitário</a>
+<a href="#retirar" class="qnav">🚨 Retirar</a>
+<a href="#abate" class="qnav">🥩 Abate</a>
+<a href="#financeiro" class="qnav">💰 Financeiro</a>
+<a href="#pesagens" class="qnav">⚖️ Pesagens</a>
+<a href="#racao" class="qnav">🌾 Ração</a>
+<a href="#relatorios" class="qnav">📊 Relatórios</a>
+<a href="#ranking" class="qnav">🏆 Ranking</a>
+<a href="#metas" class="qnav">🎯 Metas</a>
+<a href="#custos" class="qnav">💵 Custos</a>
+<a href="#config" class="qnav">⚙️ Configurações</a>
+</div>
+<style>
+.qnav{display:flex;align-items:center;justify-content:center;min-height:64px;background:var(--g);color:#fff!important;border-radius:14px;text-decoration:none!important;font-size:18px;font-weight:800;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.qnav:active{opacity:.75;transform:scale(.98)}
+</style>
+<main>
+
+<section id="home" class="page active">
+<div class="hero" style="position:relative;overflow:hidden;background:var(--gl);border:1px solid var(--l);border-radius:18px;padding:18px;margin-bottom:12px">
+<div style="font-size:22px;font-weight:800">Olá! 👋</div>
+<p style="margin:7px 0;color:var(--m)">Controle completo da sua criação de ovinos.</p>
+<div class="small">🐑 Animais • ❤️ Reprodução • 💉 Saúde • ⚖️ Peso • 💰 Vendas</div>
+<div style="position:absolute;right:14px;top:-8px;font-size:92px">🐑</div>
+</div>
+<div id="alertsHome"></div>
+<div class="grid">
+<div class="card stat"><b id="stF">0</b><span>Ovelhas</span></div>
+<div class="card stat"><b id="stM">0</b><span>Carneiros</span></div>
+<div class="card stat"><b id="stP">0</b><span>Prenhes</span></div>
+<div class="card stat"><b id="stN">0</b><span>Cordeiros nascidos</span></div>
+<div class="card stat"><b id="stD">0</b><span>Desmamados</span></div>
+<div class="card stat"><b id="stMort">0</b><span>Mortos</span></div>
+<div class="card stat"><b id="stVenda">R$ 0,00</b><span>Vendas de animais</span></div>
+<div class="card stat"><b id="stSaldo">R$ 0,00</b><span>Saldo financeiro</span></div>
+<div class="card stat"><b id="sRacao">0 kg</b><span>Ração disponível</span></div>
+<div class="card stat"><b id="sCarne">0 kg</b><span>Carne disponível</span></div>
+</div>
+<h3>Próximos eventos</h3>
+<div id="events" class="card"></div>
+</section>
+
+<section id="femeas" class="page"><div class="row"><h2>🐑 Ovelhas</h2><button onclick="novoAnimal('f')">+ Nova</button></div><div id="fList"></div></section>
+<section id="machos" class="page"><div class="row"><h2>🐏 Carneiros</h2><button onclick="novoAnimal('m')">+ Novo</button></div><div id="mList"></div></section>
+
+
+<section id="cordeiros" class="page">
+<div class="row"><h2>🐑 Cordeiros</h2><button onclick="novoCordeiro()">+ Novo cordeiro</button></div>
+<div class="grid">
+<div class="card stat"><b id="lambMamando">0</b> Mamando</div>
+<div class="card stat"><b id="lambDesmamados">0</b> Desmamados</div>
+<div class="card stat"><b id="lambEngorda">0</b> Em engorda</div>
+<div class="card stat"><b id="lambCriadeira">0</b> Na criadeira</div>
+</div>
+<div class="notice">Cadastre cada cordeiro individualmente pelo brinco. Depois do nascimento, faça o desmame e escolha o destino: 🌾 Engorda, 🐑 Criadeira, 🥩 Abate ou ❤️ Reprodução.</div>
+<div id="lambList"></div>
+</section>
+
+<section id="cordeiroForm" class="page">
+<h2 id="lambTitle">Novo cordeiro</h2>
+<div class="card">
+<div class="formgrid">
+<div><label>Brinco / número</label><input id="lNum" placeholder="COR001"></div>
+<div><label>Nome</label><input id="lName" placeholder="Ex.: Cordeiro 001"></div>
+<div><label>Sexo</label><select id="lSex"><option value="f">Fêmea</option><option value="m">Macho</option></select></div>
+<div><label>Raça</label><input id="lRace"></div>
+<div><label>Data de nascimento</label><input id="lBirth" type="date"></div>
+<div><label>Pai / carneiro</label><select id="lPai"></select></div>
+<div><label>Mãe / ovelha</label><select id="lMae"></select></div>
+<div><label>Peso ao nascer (kg)</label><input id="lPesoNasc" type="number" step=".01"></div>
+<div><label>Peso atual (kg)</label><input id="lPeso" type="number" step=".01"></div>
+<div><label>Data do desmame</label><input id="lDesm" type="date"></div>
+<div><label>Peso no desmame (kg)</label><input id="lPesoDesm" type="number" step=".01"></div>
+<div><label>Status</label><select id="lStatus">
+<option>Mamando</option><option>Desmamado</option><option>Engorda</option><option>Criadeira</option><option>Abate</option><option>Reprodução</option><option>Vendido</option><option>Mort0</option>
+</select></div>
+<div class="full"><label>Observações</label><textarea id="lObs2"></textarea></div>
+</div>
+<div class="actions">
+<button class="secondary" onclick="show('cordeiros')">Cancelar</button>
+<button onclick="saveCordeiro()">Salvar cordeiro</button>
+</div>
+</div>
+</section>
+
+<section id="animal" class="page"><h2 id="animalTitle">Novo animal</h2><div class="card">
+<div class="formgrid">
+<div><label>Brinco / número</label><input id="aNum" placeholder="OV001"></div>
+<div><label>Nome</label><input id="aName" placeholder="Ex.: Estrela"></div>
+<div><label>Sexo</label><select id="aSex"><option value="f">Fêmea</option><option value="m">Macho</option></select></div>
+<div><label>Raça</label><input id="aRace"></div>
+<div><label>Nascimento</label><input id="aBirth" type="date"></div>
+<div><label>Pai / carneiro</label><select id="aPai"></select></div>
+<div><label>Mãe / ovelha</label><select id="aMae"></select></div>
+<div><label>Peso atual (kg)</label><input id="aPeso" type="number" step=".01"></div>
+<div><label>Peso ao nascer (kg)</label><input id="pNasc" type="number" step=".01"></div>
+<div><label>Data nascimento</label><input id="dNasc" type="date"></div>
+<div><label>Peso ao desmame (kg)</label><input id="pDesm" type="number" step=".01"></div>
+<div><label>Data desmame</label><input id="dDesm" type="date"></div>
+<div><label>Peso na venda/abate (kg)</label><input id="pVenda" type="number" step=".01"></div>
+<div><label>Data venda/abate</label><input id="dVenda" type="date"></div>
+<div><label>Valor da venda (R$)</label><input id="vVenda" type="number" step=".01"></div>
+<div><label>Destino</label><select id="destino"><option>Venda</option><option>Abate</option><option>Reprodução</option><option>Outro</option></select></div>
+<div><label>Status</label><select id="aStatus"><option>Ativo</option><option>Retirar do lote</option><option>Vendido</option><option>Mort0</option></select></div>
+<div><label>Motivo da retirada</label><select id="motivo"><option value="">Selecione</option><option>Excesso de vermifugação</option><option>Doença</option><option>Idade</option><option>Baixa produtividade</option><option>Problema reprodutivo</option><option>Outro</option></select></div>
+<div class="full"><label>Observações</label><textarea id="aObs"></textarea></div>
+</div><div id="pesoResumo" class="notice">📈 Informe os pesos para acompanhar a evolução.</div>
+<div class="actions"><button class="secondary" onclick="show(sex==='f'?'femeas':'machos')">Cancelar</button><button onclick="saveAnimal()">Salvar</button></div>
+</div></section>
+
+<section id="repro" class="page"><div class="row"><h2>❤️ Reprodução</h2><button onclick="novoCobertura()">+ Cobertura</button></div><div class="grid"><div class="card stat"><b id="prenhes">0</b>Prenhes</div><div class="card stat"><b id="partosN">0</b>Partos</div></div><div id="reproList" class="card"></div><div class="actions"><button onclick="novoParto()">+ Parto</button></div></section>
+<section id="reproForm" class="page"><h2>Nova cobertura</h2><div class="card"><label>Ovelha</label><select id="rOvelha"></select><label>Carneiro</label><select id="rCarneiro"></select><label>Data</label><input id="rData" type="date"><label>Previsão do parto</label><input id="rPrev" type="date"><label>Observação</label><textarea id="rObs"></textarea><div class="actions"><button class="secondary" onclick="show('repro')">Cancelar</button><button onclick="saveCobertura()">Salvar</button></div></div></section>
+<section id="parto" class="page"><h2>Novo parto</h2><div class="card"><label>Ovelha</label><select id="bOvelha"></select><label>Data</label><input id="bData" type="date"><div class="formgrid"><div><label>Nascidos</label><input id="bNasc" type="number"></div><div><label>Vivos</label><input id="bVivos" type="number"></div><div><label>Mortos</label><input id="bMortos" type="number"></div><div><label>Sexo</label><input id="bSexo" placeholder="Ex.: 1M + 1F"></div><div class="full"><label>Brincos dos cordeiros</label><textarea id="bBrincos" placeholder="101, 102, 103"></textarea></div></div><div class="actions"><button class="secondary" onclick="show('repro')">Cancelar</button><button onclick="saveParto()">Salvar parto</button></div></div></section>
+
+<section id="saude" class="page"><div class="row"><h2>💉 Saúde</h2><button onclick="novoSaude()">+ Registro</button></div><div class="card"><label>Animal</label><select id="hAnimal"></select><label>Tipo</label><select id="hTipo"><option>Vacina</option><option>Vermifugação</option><option>Medicamento</option><option>Outro</option></select><label>Data</label><input id="hData" type="date"><label>Produto</label><input id="hProd"><label>Dose</label><input id="hDose"><label>Observação</label><textarea id="hObs"></textarea><button onclick="saveSaude()">Salvar</button></div><div id="healthList" class="card"></div></section>
+
+<section id="famacha" class="page"><div class="row"><h2>👁️ FAMACHA</h2><button onclick="novoFamacha()">+ Avaliação</button></div><div class="card"><h3>Tabela de referência</h3><table class="famacha-table"><tr><td><span class="fa-color fa1"></span><br><b>1</b></td><td>Vermelho intenso</td></tr><tr><td><span class="fa-color fa2"></span><br><b>2</b></td><td>Vermelho / rosado</td></tr><tr><td><span class="fa-color fa3"></span><br><b>3</b></td><td>Rosado</td></tr><tr><td><span class="fa-color fa4"></span><br><b>4</b></td><td>Rosa pálido — atenção</td></tr><tr><td><span class="fa-color fa5"></span><br><b>5</b></td><td>Muito pálido — alerta</td></tr></table><div class="small">A tabela é uma referência de manejo; decisões de tratamento devem seguir orientação técnica/veterinária.</div></div><div id="famList" class="card"></div></section>
+<section id="famForm" class="page"><h2>Nova avaliação FAMACHA</h2><div class="card"><label>Animal</label><select id="faAnimal"></select><label>Data</label><input id="faData" type="date"><label>Escore</label><select id="faScore"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><label>Observação</label><textarea id="faObs"></textarea><div class="actions"><button class="secondary" onclick="show('famacha')">Cancelar</button><button onclick="saveFamacha()">Salvar</button></div></div></section>
+
+<section id="sanitario" class="page"><div class="row"><h2>📅 Calendário sanitário</h2><button onclick="novoSan()">+ Atividade</button></div><div class="notice">Marque os meses em que cada atividade será realizada. Produtos, épocas e doses devem seguir o planejamento da propriedade e orientação veterinária.</div><div class="card sanwrap"><table class="san"><thead><tr><th>Atividade</th><th>JAN</th><th>FEV</th><th>MAR</th><th>ABR</th><th>MAI</th><th>JUN</th><th>JUL</th><th>AGO</th><th>SET</th><th>OUT</th><th>NOV</th><th>DEZ</th><th></th></tr></thead><tbody id="sanRows"></tbody></table></div></section>
+<section id="sanForm" class="page"><h2>Nova atividade sanitária</h2><div class="card"><label>Atividade</label><input id="sanNome" placeholder="Ex.: Vacina, tosquia, vermifugação"><label>Observação</label><input id="sanObs"><label>Meses</label><div id="sanMeses" class="grid"></div><div class="actions"><button class="secondary" onclick="show('sanitario')">Cancelar</button><button onclick="saveSan()">Salvar</button></div></div></section>
+
+<section id="retirar" class="page"><div class="row"><h2>🚨 Retirar do lote</h2><span id="retBadge" class="small"></span></div><div class="notice">Animais que atingiram o limite de vermifugações configurado ou foram marcados manualmente.</div><div id="retList"></div></section>
+
+<section id="abate" class="page"><div class="row"><h2>🥩 Compra para Abate</h2><button onclick="novoLote()">+ Novo lote</button></div><div class="grid"><div class="card stat"><b id="abInvest">R$ 0,00</b>Investimento</div><div class="card stat"><b id="abGastos">R$ 0,00</b>Gastos</div><div class="card stat"><b id="abReceita">R$ 0,00</b>Receita prevista</div><div class="card stat"><b id="abLucro">R$ 0,00</b>Lucro previsto</div></div><div class="notice">Cadastre cordeiros comprados de outras granjas, os custos até o abate e o preço esperado de venda. O lucro é calculado automaticamente.</div><div id="loteList"></div></section>
+<section id="loteForm" class="page"><h2>Novo lote para abate</h2><div class="card"><div class="formgrid">
+<div><label>Data compra</label><input id="lData" type="date"></div><div><label>Granja / origem</label><input id="lOrigem"></div>
+<div><label>Quantidade de cordeiros</label><input id="lQtd" type="number"></div><div><label>Peso total comprado (kg)</label><input id="lPesoCompra" type="number" step=".1"></div>
+<div><label>Valor da compra (R$)</label><input id="lCompra" type="number" step=".01"></div><div><label>Frete (R$)</label><input id="lFrete" type="number" step=".01"></div>
+<div><label>Ração (R$)</label><input id="lRacao" type="number" step=".01"></div><div><label>Medicamentos/vacinas (R$)</label><input id="lMed" type="number" step=".01"></div>
+<div><label>Outros gastos (R$)</label><input id="lOutros" type="number" step=".01"></div><div><label>Gasto com abate (R$)</label><input id="lAbate" type="number" step=".01"></div>
+<div><label>Embalagem (R$)</label><input id="lEmb" type="number" step=".01"></div><div><label>Transporte da venda (R$)</label><input id="lTrans" type="number" step=".01"></div>
+<div><label>Peso vivo previsto no abate (kg)</label><input id="lPesoAbate" type="number" step=".1"></div><div><label>Rendimento de carcaça (%)</label><input id="lRend" type="number" step=".1" value="45"></div>
+<div><label>Preço esperado da carne (R$/kg)</label><input id="lPreco" type="number" step=".01"></div><div><label>Valor extra de venda (R$)</label><input id="lExtraVenda" type="number" step=".01"></div>
+<div class="full"><label>Observações</label><textarea id="lObs"></textarea></div></div><div id="lCalculo" class="notice">Preencha os valores para calcular.</div><div class="actions"><button class="secondary" onclick="show('abate')">Cancelar</button><button onclick="saveLote()">Salvar lote</button></div></div></section>
+
+<section id="financeiro" class="page"><h2>💰 Financeiro</h2><div class="grid"><div class="card stat"><b id="finEntr">R$ 0,00</b>Entradas</div><div class="card stat"><b id="finSai">R$ 0,00</b>Saídas</div><div class="card stat"><b id="finSaldo">R$ 0,00</b>Saldo</div></div><div id="finList" class="card"></div></section>
+
+
+<section id="pesagens" class="page">
+<div class="row"><h2>⚖️ Pesagens</h2><button onclick="novaPesagem()">+ Pesagem</button></div>
+<div class="grid">
+<div class="card stat"><b id="pesoMedia">0 kg</b>Peso médio</div>
+<div class="card stat"><b id="ganhoMedio">0 kg</b>Ganho médio</div>
+</div>
+<div id="pesoList"></div>
+</section>
+
+<section id="pesagemForm" class="page"><h2>Nova pesagem</h2><div class="card">
+<label>Animal</label><select id="peAnimal"></select>
+<div class="formgrid"><div><label>Data</label><input id="peData" type="date"></div><div><label>Peso (kg)</label><input id="pePeso" type="number" step=".01"></div></div>
+<label>Observações</label><textarea id="peObs"></textarea>
+<div class="actions"><button class="secondary" onclick="show('pesagens')">Cancelar</button><button onclick="savePesagem()">Salvar</button></div>
+</div></section>
+
+<section id="racao" class="page">
+<div class="row"><h2>🌾 Ração</h2><button onclick="novaRacao()">+ Movimento</button></div>
+<div class="grid"><div class="card stat"><b id="racaoSaldo">0 kg</b>Estoque</div><div class="card stat"><b id="racaoCusto">R$ 0</b>Valor comprado</div></div>
+<div id="racaoList"></div>
+</section>
+<section id="racaoForm" class="page"><h2>Movimento de ração</h2><div class="card">
+<div class="formgrid"><div><label>Tipo</label><select id="raTipo"><option>Entrada</option><option>Saída</option></select></div><div><label>Data</label><input id="raData" type="date"></div>
+<div><label>Produto</label><input id="raProd"></div><div><label>Quantidade (kg)</label><input id="raQtd" type="number" step=".01"></div>
+<div><label>Valor (R$)</label><input id="raValor" type="number" step=".01"></div><div><label>Fornecedor</label><input id="raForn"></div></div>
+<div class="actions"><button class="secondary" onclick="show('racao')">Cancelar</button><button onclick="saveRacao()">Salvar</button></div>
+</div></section>
+
+<section id="relatorios" class="page"><h2>📊 Relatórios</h2>
+<div class="grid">
+<div class="card stat"><b id="repNasc">0</b>Nascimentos</div><div class="card stat"><b id="repDesm">0</b>Desmamados</div>
+<div class="card stat"><b id="repMort">0</b>Mortes</div><div class="card stat"><b id="repVend">R$ 0</b>Vendas</div>
+<div class="card stat"><b id="repDesp">R$ 0</b>Despesas</div><div class="card stat"><b id="repLucro">R$ 0</b>Saldo</div>
+</div>
+<div class="card"><h3>🐑 Distribuição do rebanho</h3><div id="repDistrib"></div></div>
+<div class="card"><h3>📈 Pesos</h3><div id="repPesos"></div></div>
+</section>
+
+<section id="ficha" class="page"><h2>📋 Ficha do animal</h2><div id="fichaBody"></div></section>
+
+
+<section id="ranking" class="page">
+<h2>🏆 Ranking das matrizes</h2>
+<div class="card"><p class="small">Desempenho das ovelhas pelos cordeiros registrados e desmamados.</p><div id="rankingList"></div></div>
+</section>
+
+<section id="carneiros" class="page">
+<h2>🐏 Controle dos carneiros</h2>
+<div class="card"><div id="carneiroList"></div></div>
+</section>
+
+<section id="metas" class="page">
+<h2>🎯 Metas</h2>
+<div class="card">
+<label>Meta de cordeiros nascidos no ano</label><input id="metaNasc" type="number" min="0">
+<label>Meta de cordeiros desmamados no ano</label><input id="metaDesm" type="number" min="0">
+<label>Meta de vendas no ano (R$)</label><input id="metaVenda" type="number" min="0" step=".01">
+<button onclick="saveMetas()">💾 Salvar metas</button>
+</div>
+<div id="metasList" class="card"></div>
+</section>
+
+<section id="custos" class="page">
+<h2>💵 Custo por cordeiro</h2>
+<div class="card"><p class="small">Registre os custos de um cordeiro para acompanhar o custo e o resultado da venda.</p>
+<div class="formgrid">
+<div><label>Cordeiro</label><select id="cuAnimal"></select></div>
+<div><label>Ração (R$)</label><input id="cuRacao" type="number" step=".01"></div>
+<div><label>Medicamentos (R$)</label><input id="cuMed" type="number" step=".01"></div>
+<div><label>Vacinas (R$)</label><input id="cuVac" type="number" step=".01"></div>
+<div><label>Outros (R$)</label><input id="cuOut" type="number" step=".01"></div>
+<div><label>Valor de venda (R$)</label><input id="cuVenda" type="number" step=".01"></div>
+</div>
+<button onclick="saveCusto()">Salvar custo</button></div>
+<div id="custosList"></div>
+</section>
+
+<section id="config" class="page"><h2>⚙️ Configurações</h2><div class="card"><label>Nome da propriedade</label><input id="cfgNome"><label>Limite de vermifugações para retirar do lote</label><input id="cfgVerm" type="number" min="1" value="3"><div class="small">Ex.: 3 = na 3ª vermifugação registrada, o animal entra nos alertas de retirada.</div><label>Aparência</label><select id="cfgTema"><option value="claro">Claro</option><option value="escuro">Escuro</option></select><div class="actions"><button onclick="saveConfig()">Salvar</button><button class="secondary" onclick="backup()">💾 Backup</button><button class="secondary" onclick="document.getElementById('restore').click()">↩️ Restaurar</button><input id="restore" type="file" accept=".json" style="display:none" onchange="restoreDb(this)"></div></div></section>
+
+</main>
+<nav id="nav" aria-label="Navegação principal" style="display:none"></nav>
+<div id="quickNav" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--l);position:sticky;top:0;z-index:10000">
+<a href="#home" onclick="show('home',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🏠 Início</button></a>
+<a href="#femeas" onclick="show('femeas',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🐑 Ovelhas</button></a>
+<a href="#cordeiros" onclick="show('cordeiros',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🐣 Cordeiros</button></a>
+<a href="#machos" onclick="show('machos',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🐏 Carneiros</button></a>
+<a href="#repro" onclick="show('repro',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">❤️ Reprodução</button></a>
+<a href="#saude" onclick="show('saude',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">💉 Saúde</button></a>
+<a href="#famacha" onclick="show('famacha',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">👁️ FAMACHA</button></a>
+<a href="#sanitario" onclick="show('sanitario',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">📅 Sanitário</button></a>
+<a href="#retirar" onclick="show('retirar',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🚨 Retirar</button></a>
+<a href="#abate" onclick="show('abate',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🥩 Abate</button></a>
+<a href="#financeiro" onclick="show('financeiro',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">💰 Financeiro</button></a>
+<a href="#pesagens" onclick="show('pesagens',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">⚖️ Pesagens</button></a>
+<a href="#racao" onclick="show('racao',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🌾 Ração</button></a>
+<a href="#relatorios" onclick="show('relatorios',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">📊 Relatórios</button></a>
+<a href="#ranking" onclick="show('ranking',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🏆 Ranking</button></a>
+<a href="#metas" onclick="show('metas',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">🎯 Metas</button></a>
+<a href="#custos" onclick="show('custos',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">💵 Custos</button></a>
+<a href="#config" onclick="show('config',null);return false" style="text-decoration:none"><button style="width:100%;min-height:58px">⚙️ Configurações</button></a>
+</div>
+
 <script>
 const KEY='ovinocontrol_v1';
 let db=JSON.parse(localStorage.getItem(KEY)||'{}');
