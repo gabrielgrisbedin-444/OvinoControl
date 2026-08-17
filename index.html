@@ -27,7 +27,7 @@ label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}input,select
 .lamb-actions button{min-width:110px}
 
 nav{position:fixed;bottom:0;left:0;right:0;height:90px;background:var(--card);border-top:1px solid var(--l);display:flex;overflow-x:auto;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
-nav button{background:transparent;color:var(--m);border-radius:0;min-width:88px;height:90px;flex:0 0 auto;font-size:11px}nav button.active{color:var(--g)}
+nav::-webkit-scrollbar{display:none}nav button{background:transparent;color:var(--m);border-radius:0;min-width:78px;width:78px;height:94px;flex:0 0 78px;font-size:11px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative;z-index:10000}nav button.active{color:var(--g)}
 .famacha-table{width:100%;border-collapse:separate;border-spacing:0 7px}.famacha-table td{padding:9px;background:var(--bg)}.famacha-table td:first-child{border-radius:9px 0 0 9px;width:55px;text-align:center}.famacha-table td:last-child{border-radius:0 9px 9px 0}
 .fa-color{display:inline-block;width:32px;height:32px;border-radius:7px;border:1px solid #777;vertical-align:middle}.fa1{background:#8b0000}.fa2{background:#c62828}.fa3{background:#e5a100}.fa4{background:#f1c40f}.fa5{background:#f5f5f5}
 .sanwrap{overflow-x:auto}.san{min-width:850px;width:100%;border-collapse:separate;border-spacing:0 5px}.san th,.san td{padding:6px;text-align:center}.san th:first-child,.san td:first-child{text-align:left;min-width:230px}.san td{background:var(--bg)}.san td:first-child{border-radius:8px 0 0 8px}.san td:last-child{border-radius:0 8px 8px 0}.month{width:40px;height:34px;padding:0;background:var(--card);color:var(--t);border:1px solid var(--l)}.month.on{background:var(--g);color:#fff}
@@ -530,6 +530,11 @@ $('cfgNome').value=db.config.nome||'';$('cfgVerm').value=db.config.limiteVermifu
 }
 (function(){
 if($('animalPhoto'))$('animalPhoto').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{$('animalPhoto').dataset.src=r.result;$('animalPhotoPreview').src=r.result;$('animalPhotoPreview').style.display='block'};r.readAsDataURL(f)});
+
+
+document.querySelectorAll('#nav button').forEach(b=>{
+  b.addEventListener('touchend',e=>{ e.preventDefault(); b.click(); }, {passive:false});
+});
 
 if(db.config.tema==='escuro')document.body.classList.add('dark');['hData','faData','rData','bData','lData'].forEach(id=>$(id).value=today());render()})();
 </script>
